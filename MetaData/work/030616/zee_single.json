@@ -1,0 +1,12 @@
+{
+    "processes" : {
+        "data_double" : [ 
+	      "/DoubleEG/ferrif-RunIISpring16DR80X-2_0_0-25ns-2_0_0-v0-Run2016B-PromptReco-v1-634d2b8230861d3e22d915e30c562c87/USER",
+	      "/DoubleEG/ferrif-RunIISpring16DR80X-2_0_0-25ns-2_0_0-v0-Run2016B-PromptReco-v2-634d2b8230861d3e22d915e30c562c87/USER"
+        ],
+	"mc_double" : [
+	      "/DYToEE_NNPDF30_13TeV-powheg-pythia8/ferrif-RunIISpring16DR80X-2_0_0-25ns-2_0_0-v0-RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1-ab7f7a5fb9fbc4628a618ccc220a1e9e/USER"
+	]
+     },
+     "cmdLine" : "campaign=RunIISpring16DR80X-2_0_0-25ns targetLumi=708"
+}

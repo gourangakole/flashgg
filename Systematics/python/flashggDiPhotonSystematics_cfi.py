@@ -1,7 +1,8 @@
 import FWCore.ParameterSet.Config as cms
 
-# default energy scale uncertainties and smearings from 76X re-reco
-from flashgg.Systematics.escales.escale76X_16DecRereco_2015 import photonSmearBins, photonScaleUncertBins 
+# No default. Latest is only in the EGM tool
+photonSmearBins = cms.PSet()
+photonScaleUncertBins = cms.PSet()
 
 mvaShiftBins = cms.PSet(
     variables = cms.vstring("abs(superCluster.eta)"),
@@ -195,19 +196,19 @@ sigmaEOverEShiftBins = cms.PSet(
 RVBins = cms.PSet(
     variables = cms.vstring("pt"),
     bins = cms.VPSet(
-        cms.PSet(lowBounds = cms.vdouble(0), upBounds = cms.vdouble(5), values = cms.vdouble(1.03491,0.949336), uncertainties = cms.vdouble(0.00442361,0.00442361,0.00642325,0.00642325)),
-        cms.PSet(lowBounds = cms.vdouble(5), upBounds = cms.vdouble(10), values = cms.vdouble(1.03103,0.947076), uncertainties = cms.vdouble(0.00336096,0.00336096,0.00573389,0.00573389)),
-        cms.PSet(lowBounds = cms.vdouble(10), upBounds = cms.vdouble(15), values = cms.vdouble(1.01637,0.965526), uncertainties = cms.vdouble(0.00306851,0.00306851,0.00646403,0.00646403)),
-        cms.PSet(lowBounds = cms.vdouble(15), upBounds = cms.vdouble(20), values = cms.vdouble(1.00566,0.984498), uncertainties = cms.vdouble(0.00289546,0.00289546,0.007929,0.007929)),
-        cms.PSet(lowBounds = cms.vdouble(20), upBounds = cms.vdouble(30), values = cms.vdouble(0.991146,1.03475), uncertainties = cms.vdouble(0.00196846,0.00196846,0.0077251,0.0077251)),
-        cms.PSet(lowBounds = cms.vdouble(30), upBounds = cms.vdouble(40), values = cms.vdouble(0.98022,1.13845), uncertainties = cms.vdouble(0.0018857,0.0018857,0.0131993,0.0131993)),
-        cms.PSet(lowBounds = cms.vdouble(40), upBounds = cms.vdouble(50), values = cms.vdouble(0.982686,1.18848), uncertainties = cms.vdouble(0.00189045,0.00189045,0.0205798,0.0205798)),
-        cms.PSet(lowBounds = cms.vdouble(50), upBounds = cms.vdouble(60), values = cms.vdouble(0.987457,1.19062), uncertainties = cms.vdouble(0.00197685,0.00197685,0.0300427,0.0300427)),
-        cms.PSet(lowBounds = cms.vdouble(60), upBounds = cms.vdouble(80), values = cms.vdouble(0.994407,1.11126), uncertainties = cms.vdouble(0.00157416,0.00157416,0.0313173,0.0313173)),
-        cms.PSet(lowBounds = cms.vdouble(80), upBounds = cms.vdouble(100), values = cms.vdouble(0.999829,1.00413), uncertainties = cms.vdouble(0.00188478,0.00188478,0.0453944,0.0453944)),
-        cms.PSet(lowBounds = cms.vdouble(100), upBounds = cms.vdouble(140), values = cms.vdouble(1.00126,0.957765), uncertainties = cms.vdouble(0.00171718,0.00171718,0.0574166,0.0574166)),
-        cms.PSet(lowBounds = cms.vdouble(140), upBounds = cms.vdouble(200), values = cms.vdouble(0.998821,1.06351), uncertainties = cms.vdouble(0.00176983,0.00176983,0.0953629,0.0953629)),
-        cms.PSet(lowBounds = cms.vdouble(200), upBounds = cms.vdouble(400), values = cms.vdouble(1,1), uncertainties = cms.vdouble(0.00212644,0.00212644,0.240175,0.240175)),
+        cms.PSet(lowBounds = cms.vdouble(0), upBounds = cms.vdouble(5), values = cms.vdouble(1.01448,0.981165), uncertainties = cms.vdouble(0.00436957,0.00436957,0.00568231,0.00568231)),
+        cms.PSet(lowBounds = cms.vdouble(5), upBounds = cms.vdouble(10), values = cms.vdouble(1.02477,0.964937), uncertainties = cms.vdouble(0.00340337,0.00340337,0.00481751,0.00481751)),
+        cms.PSet(lowBounds = cms.vdouble(10), upBounds = cms.vdouble(15), values = cms.vdouble(1.01705,0.97076), uncertainties = cms.vdouble(0.00320492,0.00320492,0.00549499,0.00549499)),
+        cms.PSet(lowBounds = cms.vdouble(15), upBounds = cms.vdouble(20), values = cms.vdouble(1.00447,0.990251), uncertainties = cms.vdouble(0.00301649,0.00301649,0.00657761,0.00657761)),
+        cms.PSet(lowBounds = cms.vdouble(20), upBounds = cms.vdouble(30), values = cms.vdouble(0.989095,1.03485), uncertainties = cms.vdouble(0.00203486,0.00203486,0.00650198,0.00650198)),
+        cms.PSet(lowBounds = cms.vdouble(30), upBounds = cms.vdouble(40), values = cms.vdouble(0.990194,1.05189), uncertainties = cms.vdouble(0.00202018,0.00202018,0.0106899,0.0106899)),
+        cms.PSet(lowBounds = cms.vdouble(40), upBounds = cms.vdouble(50), values = cms.vdouble(0.993103,1.05375), uncertainties = cms.vdouble(0.00211958,0.00211958,0.0165186,0.0165186)),
+        cms.PSet(lowBounds = cms.vdouble(50), upBounds = cms.vdouble(60), values = cms.vdouble(0.997169,1.03212), uncertainties = cms.vdouble(0.00226204,0.00226204,0.0256642,0.0256642)),
+        cms.PSet(lowBounds = cms.vdouble(60), upBounds = cms.vdouble(80), values = cms.vdouble(0.989989,1.16613), uncertainties = cms.vdouble(0.00170693,0.00170693,0.0283254,0.0283254)),
+        cms.PSet(lowBounds = cms.vdouble(80), upBounds = cms.vdouble(100), values = cms.vdouble(0.994285,1.12413), uncertainties = cms.vdouble(0.00195568,0.00195568,0.0424751,0.0424751)),
+        cms.PSet(lowBounds = cms.vdouble(100), upBounds = cms.vdouble(140), values = cms.vdouble(0.997186,1.09614), uncertainties = cms.vdouble(0.00166747,0.00166747,0.0569571,0.0569571)),
+        cms.PSet(lowBounds = cms.vdouble(140), upBounds = cms.vdouble(200), values = cms.vdouble(0.998048,1.0862), uncertainties = cms.vdouble(0.00196353,0.00196353,0.0866963,0.0866963)),
+        cms.PSet(lowBounds = cms.vdouble(200), upBounds = cms.vdouble(400), values = cms.vdouble(1,1), uncertainties = cms.vdouble(0.00276887,0.00276887,0.255427,0.255427)),
         # maximum energy beyond 7000 because of wonky DiPhotons in data
         cms.PSet(lowBounds = cms.vdouble(400 ) , upBounds = cms.vdouble(999999999 ) , values = cms.vdouble(1,1              ) , uncertainties = cms.vdouble(0.,0.,0.,0.)) 
         
@@ -252,12 +253,9 @@ emptySigma = cms.PSet(
     secondVar = cms.vint32()
 )
 
-# latest greatest
-# scalesAndSmearingsPrefix = cms.string("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015_photons")
-
-# unblinding version + Et-dependent scale uncertainties
-scalesAndSmearingsPrefix = cms.string("EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015_Etunc")
-
+scalesAndSmearingsPrefix = cms.string("EgammaAnalysis/ElectronTools/data/Golden22June")
+#scalesAndSmearingsPrefix = cms.string("EgammaAnalysis/ElectronTools/data/Golden10June_plus_DCS")
+scalesAndSmearingsPrefixForSigmaEOverE = cms.string("EgammaAnalysis/ElectronTools/data/Golden10June_plus_DCS")
 
 MCScaleHighR9EB = cms.PSet( PhotonMethodName = cms.string("FlashggPhotonScale"),
           MethodName = cms.string("FlashggDiPhotonFromPhoton"),
@@ -438,7 +436,7 @@ SigmaEOverEShift = cms.PSet( PhotonMethodName = cms.string("FlashggPhotonSigEOve
           OverallRange = cms.string("1"),
           BinList = sigmaEOverEShiftBins,
           Debug = cms.untracked.bool(False),
-          ApplyCentralValue = cms.bool(True)
+          ApplyCentralValue = cms.bool(False)
           )
 
 SigmaEOverESmearing = cms.PSet( PhotonMethodName = cms.string("FlashggPhotonSigEoverESmearing"),
@@ -456,7 +454,7 @@ SigmaEOverESmearing_EGM = cms.PSet( PhotonMethodName = cms.string("FlashggPhoton
           Label = cms.string("SigmaEOverESmearing"),
           FirstParameterName = cms.string("Rho"),
           SecondParameterName = cms.string("Phi"),
-          CorrectionFile = scalesAndSmearingsPrefix,
+          CorrectionFile = scalesAndSmearingsPrefixForSigmaEOverE,
           NSigmas = cms.PSet( firstVar = cms.vint32(),
                             secondVar = cms.vint32()),
           OverallRange = cms.string("1"),
@@ -626,4 +624,4 @@ flashggDiPhotonSystematics = cms.EDProducer('FlashggDiPhotonSystematicProducer',
                     SigmaEOverESmearing,
                     FracRVWeight
                 )
-                )
+)

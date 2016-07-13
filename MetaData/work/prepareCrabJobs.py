@@ -239,8 +239,9 @@ if options.createCrabConfig:
     Popen(['cp', '-p', options.parameterSet, './'])
     rel = os.environ.get('CMSSW_BASE')
     print rel
-    Popen(['cp', '-p', rel+'/src/flashgg/MicroAOD/data/Fall15_25nsV2_DATA.db', './'])
-    Popen(['cp', '-p', rel+'/src/flashgg/MicroAOD/data/Fall15_25nsV2_MC.db', './'])
+    Popen(['cp', '-p', rel+'/src/flashgg/MicroAOD/data/Spring16_25nsV6_DATA.db', './'])
+    Popen(['cp', '-p', rel+'/src/flashgg/MicroAOD/data/Spring16_25nsV6_MC.db', './'])
+    Popen(['cp', '-p', rel+'/src/flashgg/MicroAOD/data/QGL_80X.db', './'])
     print ("Storing options into config.json")
     cfg = open("config.json","w+")
     cfg.write( dumpCfg(options) )
@@ -259,10 +260,13 @@ if options.createCrabConfig:
         ###         PrimaryDataset = PrimaryDataset +"-"+ ProcessedDataset[position:]
             
         jobname = "_".join([flashggVersion, PrimaryDataset, ProcessedDataset])
+        orig_jobname = jobname
         if len(jobname) > 97:
             jobname = jobname.replace("TuneCUEP8M1_13TeV-pythia8","13TeV")
         if len(jobname) > 97:
             jobname = jobname.replace("TuneCUETP8M1_13TeV-madgraphMLM-pythia8","13TeV-mg")
+        if len(jobname) > 97:
+            jobname = jobname.replace("TuneCUETP8M1_13TeV_Pythia8","13TeV-p8")
         if len(jobname) > 97:
             jobname = jobname.replace("RSGravToGG","Grav")
         if len(jobname) > 97:
@@ -274,10 +278,38 @@ if options.createCrabConfig:
         if len(jobname) > 97:
             jobname = jobname.replace("RunIISpring16MiniAODv1-PUSpring16_80X_mcRun2","Spring16")
         if len(jobname) > 97:
+            jobname = jobname.replace("RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2","Spring16")
+        if len(jobname) > 97:
             jobname = jobname.replace("RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2","Spring16")
         if len(jobname) > 97:
-            print "jobname length: %d " % len(jobname)
-            jobname = jobname[:97]
+            jobname = jobname.replace("RunIISpring16MiniAODv2-PUSpring16RAWAODSIM","Spring16")
+        if len(jobname) > 97:
+            jobname = jobname.replace("RunIISpring16MiniAODv1-PUSpring16RAWAODSIM","Spring16")
+        if len(jobname) > 97:
+            jobname = jobname.replace("plus","p")
+        if len(jobname) > 97:
+            jobname = jobname.replace("minus","m")
+        if len(jobname) > 97:
+            jobname = jobname.replace("percentMaterial","Mat")
+        if len(jobname) > 97:
+            jobname = jobname.replace("TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8","13TeV-amcnlo-p8")
+        if len(jobname) > 97:
+            jobname = jobname.replace("80X_mcRun2_asymptotic_2016_miniAODv2","asym16")
+        if len(jobname) > 97:
+            jobname = jobname.replace("pythia8","p8")
+        if len(jobname) > 97:
+            jobname = jobname.replace("mcRun2_asymptotic_2016","asym16")
+        if len(jobname) > 97:
+            jobname = jobname.replace("asymptotic_2016","asym16")
+        if len(jobname) > 97:
+            jobname = jobname.replace("reHLT_80X_mcRun2_asymptotic_v14-v1","reHLTasym16")
+        if len(jobname) > 97:
+            print orig_jobname
+            print "-->", len(jobname), jobname
+            raise Exception
+        #if len(jobname) > 97:
+        #    print "jobname length: %d " % len(jobname)
+        #    jobname = jobname[:97]
         jobname0 = jobname.rstrip("-").rstrip("-v")
         
         # Increment flashgg- processing index if job has been launched before (ie if crab dir already exists)

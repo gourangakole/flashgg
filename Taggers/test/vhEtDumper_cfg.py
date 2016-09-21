@@ -12,12 +12,15 @@ print options
 
 # maxEvents is the max number of events processed of each file, not globally
 options.maxEvents = -1
+#options.inputFiles = "file:/tmp/nancy/vhEtTagOutputFile_VHsignal.root" 
 options.inputFiles = "file:myTagOutputFile.root" 
-options.outputFile = "VBFTagsDump.root" 
+
+options.outputFile = "VHEtTagsDump_signal.root" 
 options.parseArguments()
 
 ## I/O SETUP ##
-process = cms.Process("VBFTagsDumper")
+#process = cms.Process("VHEtTagsDumper")
+process = cms.Process("VHLooseTagsDumper")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
@@ -34,9 +37,10 @@ process.TFileService = cms.Service("TFileService",
 from flashgg.Taggers.tagsDumpers_cfi import createTagDumper
 import flashgg.Taggers.dumperConfigTools as cfgTools
 
-process.vbfTagDumper = createTagDumper("VBFTag")
-process.vbfTagDumper.dumpTrees = True
-process.vbfTagDumper.dumpHistos = True
+#process.vhEtTagDumper = createTagDumper("VHEtTag")
+process.vhEtTagDumper = createTagDumper("VHLooseTag")
+process.vhEtTagDumper.dumpTrees = True
+process.vhEtTagDumper.dumpHistos = True
 
 dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
                  "dipho_cosphi     := abs(cos(diPhoton.leadingPhoton.phi - diPhoton.subLeadingPhoton.phi))",
@@ -62,43 +66,52 @@ dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
                  "leadIDMVA        := diPhoton.leadingView.phoIdMvaWrtChosenVtx",
                  "subleadIDMVA     := diPhoton.subLeadingView.phoIdMvaWrtChosenVtx",]
 
-cfgTools.addCategories(process.vbfTagDumper,
+cfgTools.addCategories(process.vhEtTagDumper,
                        ## categories definition                                                                                                                                                                                  
                        [("all","1",0)
                     ],
                        ## variables to be dumped in trees/datasets. Same variables for all categories                                                                                                                            
                        variables=dipho_variables+
-                       ["dRphoLeadJ    := min(deltaR(leadingJet.eta, leadingJet.phi, diPhoton.leadingPhoton.eta, diPhoton.leadingPhoton.phi), deltaR(leadingJet.eta, leadingJet.phi, diPhoton.subLeadingPhoton.eta, diPhoton.subLeadingPhoton.phi))",
-                        "dRphoSubleadJ := min(deltaR(subLeadingJet.eta, subLeadingJet.phi, diPhoton.leadingPhoton.eta, diPhoton.leadingPhoton.phi), deltaR(subLeadingJet.eta, subLeadingJet.phi, diPhoton.subLeadingPhoton.eta, diPhoton.subLeadingPhoton.phi))",
-                        "leadJPt       := leadingJet.pt",
-                        "leadJEta      := leadingJet.eta",
-                        "subleadJPt    := subLeadingJet.pt",
-                        "subleadJEta   := leadingJet.eta",
-                        "Mjj           := sqrt((leadingJet.energy+subLeadingJet.energy)^2-(leadingJet.px+subLeadingJet.px)^2-(leadingJet.py+subLeadingJet.py)^2-(leadingJet.pz+subLeadingJet.pz)^2)",
-                        "dijet_dEta    := abs(leadingJet.eta - subLeadingJet.eta)",
-                        "dijet_dPhi    := deltaPhi(leadingJet.phi, subLeadingJet.phi)",
-                        "dijet_Zep     := VBFMVA.dijet_Zep",
-                        "dijet_MVA     := VBFMVA.VBFMVAValue",
-                        "vbfcat        := categoryNumber",
-                        "genZ           :=tagTruth().genPV().z",
-                        "vtxZ           :=diPhoton().vtx().z",
-                        "dZ            :=abs(tagTruth().genPV().z-diPhoton().vtx().z)",
-                        #"leadQuarkPt                  := tagTruth().pt_Q1",
-                        "matchingGenJetToLeadPt    := tagTruth().pt_genPartMatchingToJ1"
+                       ["pfMET_rawPt        := met.uncorPt",
+                        "pfMET_rawPhi       := met.uncorPhi",
+                        "pfMET_rawSumEt     := met.uncorSumEt",
+                        "pfMET_corPt        := met.corPt",
+                        "pfMET_corPhi       := met.corPhi",
+                        "pfMET_corSumEt     := met.corSumEt",
+                        "caloMET_rawPt      := met.caloMETPt",
+                        "caloMET_rawPhi     := met.caloMETPhi",
+                        "caloMET_rawSumEt   := met.caloMETSumEt",
+                        "genMET_pt          := met.genMET.pt",
+                        "genMET_phi         := met.genMET.phi",
+                        "genMET_sumEt       := met.genMET.sumEt",
+                        "pfNeutralEMFraction := met.NeutralEMFraction",
+                        "pfNeutralHadEtFraction := met.NeutralHadEtFraction",
+                        "pfChargedEMEtFraction := met.ChargedEMEtFraction",
+                        "pfChargedHadEtFraction := met.ChargedHadEtFraction"
                         ],
-                       histograms=["CMS_hgg_mass>>mass(160,100,180)",
+                       histograms=["mass>>mass(160,100,180)",
                                    "subleadPt:leadPt>>ptLeadvsSub(180,20,200:180,20,200)",
-                                   "diphoMVA>>diphoMVA(50,0,1)",
-                                   "maxEta>>maxEta[0.,0.1,0.2,0.3,0.4,0.6,0.8,1.0,1.2,1.4442,1.566,1.7,1.8,2.,2.2,2.3,2.5]",
-                                   "subleadJetPt:leadJetPt>>JetptLeadvsSub(8,20,100:8,20,100)",
-                                   "VBFMVA>>VBFMVA(50,0,1)"
-                                   ]
+                                   "leadIDMVA>>leadIDMVA(50,0,1)",
+                                   "subleadIDMVA>>subleadIDMVA(50,0,1)",
+                                   "pfMET_rawPt>>pfMET_rawPt(250,0,500)",
+                                   "pfMET_corPt>>pfMET_corPt(250,0,500)",
+                                   "pfMET_rawSumEt>>pfMET_rawSumEt(400,200,2000)",
+                                   "pfMET_corSumEt>>pfMET_corSumEt(400,200,2000)",
+                                   "caloMET_rawPt>>caloMET_rawPt(250,0,500)",
+                                   "caloMET_rawSumEt>>caloMET_rawSumEt(400,200,2000)",
+                                   "pfMET_rawPhi>>pfMET_rawPhi(100,-3.14,3.14)",
+                                   "pfMET_corPhi>>pfMET_corPhi(100,-3.14,3.14)",
+                                   "caloMET_rawPhi>>caloMET_rawPhi(100,-3.14,3.14)",
+                                   "genMET_pt>>genMET_pt(250,0,500)",
+                                   "genMET_phi>>genMET_phi(100,-3.14,3.14)",
+                                   "genMET_sumEt>>genMET_sumEt(400,200,2000)"
+                                  ]
                        )
 
 
 
 process.p1 = cms.Path(
-    process.vbfTagDumper
+    process.vhEtTagDumper
     )
 
 print process.p1

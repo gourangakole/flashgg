@@ -9,6 +9,7 @@
 #include "flashgg/DataFormats/interface/VHTightTag.h"
 #include "flashgg/DataFormats/interface/VHHadronicTag.h"
 #include "flashgg/DataFormats/interface/ZPlusJetTag.h"
+#include "flashgg/DataFormats/interface/VHEtTag.h"
 
 #include "flashgg/Taggers/interface/CollectionDumper.h"
 
@@ -34,6 +35,10 @@ namespace flashgg {
     typedef CollectionDumper<std::vector<VHHadronicTag>,
             VHHadronicTag,
             CutBasedClassifier<VHHadronicTag> > CutBasedVHHadronicTagDumper;
+    typedef CollectionDumper<std::vector<VHEtTag>,
+            VHEtTag,
+            CutBasedClassifier<VHEtTag> > CutBasedVHEtTagDumper;
+
     typedef CollectionDumper<std::vector<ZPlusJetTag>,
             ZPlusJetTag,
             CutBasedClassifier<ZPlusJetTag> > CutBasedZPlusJetTagDumper;

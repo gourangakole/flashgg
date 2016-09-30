@@ -60,8 +60,31 @@ print >> fout, "process.source.fileNames = cms.untracked.vstring([ '%s' ])" % in
 # output file
 intermediateOutputDir = tempfile.mkdtemp()
 
-intermediateOutputFname = os.path.join(intermediateOutputDir, "output-%04d.root" % jobNumber)
+intermediateOutputFname = os.path.join(intermediateOutputDir, "output-%04d.root" % jobNumber) # defined in DEBUG gkole
 intermediateLogFname    = os.path.join(intermediateOutputDir, "output-%04d.log" % jobNumber)
+
+# DEBUG gkole
+
+
+print "inputFile", inputFile
+dspartstmp = inputFile.strip('/').split('/')
+if len(dspartstmp) > 1:
+    secondary = dspartstmp[1]
+else:
+    secondary = None
+
+# primary = '/' + dspartstmp[0]
+
+print "9th term", dspartstmp[8]
+
+# print "primary", primary
+
+intermediateOutputFname = os.path.join(intermediateOutputDir, "output-"+dspartstmp[8]+"-%04d.root" % jobNumber) 
+# print "intermediateOutputFnameCheck", intermediateOutputFnameCheck
+intermediateLogFname    = os.path.join(intermediateOutputDir, "output-"+dspartstmp[8]+"-%04d.log" % jobNumber)
+print "intermediateOutputFname", intermediateOutputFname
+print "intermediateLogFname", intermediateLogFname
+# END DEBUG gkole
 
 print >> fout, "process.out.fileName = '%s'" % intermediateOutputFname
 

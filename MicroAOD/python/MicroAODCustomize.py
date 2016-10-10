@@ -101,6 +101,8 @@ class MicroAODCustomize(object):
             self.customizePuppi(process)
         if self.processType == "data":
             self.customizeData(process)
+            if "Mu" in customize.datasetName:
+                self.customizeDataMuons(process)
         elif self.processType == "signal":
             self.customizeSignal(process)
         if self.processType == "background":
@@ -138,7 +140,7 @@ class MicroAODCustomize(object):
     # signal specific customization
     def customizeSignal(self,process):
         process.flashggGenPhotonsExtra.defaultType = 1
-        from flashgg.MicroAOD.flashggMETs_cff import runMETs
+        from flashgg.MicroAOD.flashggMet_RunCorrectionAndUncertainties_cff import runMETs
         runMETs(process,True) #isMC
         # Default should be the right name for all signals
         process.load("flashgg/MicroAOD/flashggPDFWeightObject_cfi")
@@ -146,7 +148,7 @@ class MicroAODCustomize(object):
 
     # background specific customization
     def customizeBackground(self,process):
-        from flashgg.MicroAOD.flashggMETs_cff import runMETs
+        from flashgg.MicroAOD.flashggMet_RunCorrectionAndUncertainties_cff.py import runMETs
         runMETs(process,True) #isMC
         if "sherpa" in self.datasetName:
             process.flashggGenPhotonsExtra.defaultType = 1
@@ -156,7 +158,7 @@ class MicroAODCustomize(object):
     def customizeData(self,process):
         ## remove MC-specific modules
         modules = process.flashggMicroAODGenSequence.moduleNames()
-        from flashgg.MicroAOD.flashggMETs_cff import runMETs
+        from flashgg.MicroAOD.flashggMet_RunCorrectionAndUncertainties_cff import runMETs
         runMETs(process,False) #!isMC
         for pathName in process.paths:
             path = getattr(process,pathName)
@@ -167,6 +169,12 @@ class MicroAODCustomize(object):
         process.out.outputCommands.append("keep *_*_*RecHit*_*") # for bad events
         delattr(process,"flashggPrunedGenParticles") # will be run due to unscheduled mode unless deleted
         self.customizeHighMassIsolations(process)
+        process.load("flashgg/MicroAOD/flashggDiPhotonFilter_cfi")
+        process.p1 = cms.Path(process.diPhotonFilter) # Do not save events with 0 diphotons
+        process.out.SelectEvents = cms.untracked.PSet(SelectEvents=cms.vstring('p1'))
+
+    def customizeDataMuons(self,process):
+        process.diPhotonFilter.src = "flashggSelectedMuons"
 
     def customizeHighMassIsolations(self,process):
         # for isolation cones

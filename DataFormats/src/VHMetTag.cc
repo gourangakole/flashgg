@@ -1,20 +1,20 @@
 #include "flashgg/DataFormats/interface/DiPhotonCandidate.h"
-#include "flashgg/DataFormats/interface/VHEtTag.h"
+#include "flashgg/DataFormats/interface/VHMetTag.h"
 #include "CommonTools/CandUtils/interface/AddFourMomenta.h"
 
 using namespace flashgg;
 
-VHEtTag::VHEtTag() {}
+VHMetTag::VHMetTag() {}
 
-VHEtTag::~VHEtTag() {}
+VHMetTag::~VHMetTag() {}
 
-VHEtTag::VHEtTag( edm::Ptr<flashgg::DiPhotonCandidate> diPho, edm::Ptr<DiPhotonMVAResult> mvaRes ) :
-    VHEtTag::VHEtTag( diPho, *mvaRes ) {}
+VHMetTag::VHMetTag( edm::Ptr<flashgg::DiPhotonCandidate> diPho, edm::Ptr<DiPhotonMVAResult> mvaRes ) :
+    VHMetTag::VHMetTag( diPho, *mvaRes ) {}
 
-VHEtTag::VHEtTag( edm::Ptr<DiPhotonCandidate> dipho, DiPhotonMVAResult mvares ) :
+VHMetTag::VHMetTag( edm::Ptr<DiPhotonCandidate> dipho, DiPhotonMVAResult mvares ) :
     DiPhotonTagBase::DiPhotonTagBase( dipho, mvares ) {}
 
-void VHEtTag::setMet( edm::Ptr<flashgg::Met> met )
+void VHMetTag::setMet( edm::Ptr<flashgg::Met> met )
 {
     theMet_ = met;
 }

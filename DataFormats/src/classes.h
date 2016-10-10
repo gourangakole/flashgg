@@ -13,6 +13,7 @@
 #include "flashgg/DataFormats/interface/Muon.h"
 #include "flashgg/DataFormats/interface/GenPhotonExtra.h"
 #include "flashgg/DataFormats/interface/Jet.h"
+#include "flashgg/DataFormats/interface/Met.h"
 #include "flashgg/DataFormats/interface/Photon.h"
 #include "flashgg/DataFormats/interface/SinglePhotonView.h"
 #include "flashgg/DataFormats/interface/SingleVertexView.h"
@@ -25,13 +26,17 @@
 #include "flashgg/DataFormats/interface/VHLooseTag.h"
 #include "flashgg/DataFormats/interface/WHLeptonicTag.h"
 #include "flashgg/DataFormats/interface/VHTightTag.h"
+#include "flashgg/DataFormats/interface/ZHLeptonicTag.h"
+#include "flashgg/DataFormats/interface/VHLeptonicLooseTag.h"
+#include "flashgg/DataFormats/interface/VHMetTag.h"
 #include "flashgg/DataFormats/interface/VHEtTag.h"
 #include "flashgg/DataFormats/interface/DiMuonCandidate.h"   //JTao
 #include "flashgg/DataFormats/interface/MuMuGammaCandidate.h"   //JTao
 #include "flashgg/DataFormats/interface/PhotonJetCandidate.h" //Martina
 #include "flashgg/DataFormats/interface/TagTruthBase.h"
 #include "flashgg/DataFormats/interface/VBFTagTruth.h"
-#include "flashgg/DataFormats/interface/VHTagTruth.h"
+#include "flashgg/DataFormats/interface/VHTagTruth.h" //mplaner
+
 #include "flashgg/DataFormats/interface/WeightedObject.h"
 #include "flashgg/DataFormats/interface/PDFWeightObject.h"
 #include "flashgg/DataFormats/interface/ZPlusJetTag.h"
@@ -226,6 +231,10 @@ namespace  {
         std::vector<flashgg::VBFTagTruth> vec_vbftt;
         edm::Wrapper<std::vector<flashgg::VBFTagTruth> > wrp_vec_vbftt;
 
+        flashgg::VHTagTruth vhtt;
+        std::vector<flashgg::VHTagTruth> vec_vhtt;
+        edm::Wrapper<std::vector<flashgg::VHTagTruth> > wrp_vec_vhtt;
+
         flashgg::VHLooseTag vhl;
         std::vector<flashgg::VHLooseTag> vec_vhl;
         edm::Wrapper<std::vector<flashgg::VHLooseTag> > wrp_vec_vhl;
@@ -240,13 +249,31 @@ namespace  {
         std::vector<flashgg::VHHadronicTag> vec_vhhad;
         edm::Wrapper<std::vector<flashgg::VHHadronicTag> > wrp_vec_vhhad;
 
+        flashgg::VHMetTag vhmet;
+        std::vector<flashgg::VHMetTag> vec_vhmet;
+        edm::Wrapper<std::vector<flashgg::VHMetTag> > wrp_vec_vhmet;
+
+        flashgg::ZHLeptonicTag zht;
+        std::vector<flashgg::ZHLeptonicTag> vec_zht;
+        edm::Wrapper<std::vector<flashgg::ZHLeptonicTag> > wrp_vec_zht;
+        
+        flashgg::VHLeptonicLooseTag vhll;
+        std::vector<flashgg::VHLeptonicLooseTag> vec_vhll;
+        edm::Wrapper<std::vector<flashgg::VHLeptonicLooseTag> > wrp_vec_vhll;
+
+        //        flashgg::WHLeptonicTag whl;
+        //        std::vector<flashgg::WHLeptonicTag> vec_whl;
+        //        edm::Wrapper<std::vector<flashgg::WHLeptonicTag> > wrp_vec_whl;
+        //        edm::Ptr<pat::Electron> ptr_elec_whl;
+        //        edm::Ptr<pat::Muon> ptr_muon_whl;
+        
         flashgg::VHEtTag vhet;
         std::vector<flashgg::VHEtTag> vec_vhet;
         edm::Wrapper<std::vector<flashgg::VHEtTag> > wrp_vec_vhet;
         
-        flashgg::VHTagTruth vhtt;
-        std::vector<flashgg::VHTagTruth> vec_vhtt;
-        edm::Wrapper<std::vector<flashgg::VHTagTruth> > wrp_vec_vhtt;
+        //        flashgg::VHTagTruth vhtt;
+        //        std::vector<flashgg::VHTagTruth> vec_vhtt;
+        //        edm::Wrapper<std::vector<flashgg::VHTagTruth> > wrp_vec_vhtt;
 
         edm::Ptr<pat::Electron> ptr_elec_vht;
         edm::Ptr<pat::Muon> ptr_muon_vht;

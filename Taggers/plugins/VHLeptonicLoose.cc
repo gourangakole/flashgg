@@ -10,7 +10,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "flashgg/DataFormats/interface/Jet.h"
 #include "flashgg/DataFormats/interface/DiPhotonCandidate.h"
-#include "flashgg/DataFormats/interface/VHTightTag.h"
+#include "flashgg/DataFormats/interface/VHLeptonicLooseTag.h"
 #include "flashgg/DataFormats/interface/Met.h"
 #include "flashgg/DataFormats/interface/Electron.h"
 #include "flashgg/DataFormats/interface/Muon.h"
@@ -29,6 +29,7 @@
 #include <string>
 #include <utility>
 #include "TLorentzVector.h"
+#include "DataFormats/Math/interface/LorentzVector.h"
 #include "TMath.h"
 
 using namespace std;
@@ -36,19 +37,18 @@ using namespace edm;
 
 
 namespace flashgg {
-    class VHTightTagProducer : public EDProducer
+    class VHLeptonicLooseTagProducer : public EDProducer
     {
 
     public:
         typedef math::XYZPoint Point;
 
-        VHTightTagProducer( const ParameterSet & );
+        VHLeptonicLooseTagProducer( const ParameterSet & );
     private:
         void produce( Event &, const EventSetup & ) override;
 
         std::vector<edm::EDGetTokenT<View<flashgg::Jet> > > tokenJets_;
         EDGetTokenT<View<DiPhotonCandidate> > diPhotonToken_;
-        //EDGetTokenT<View<Jet> > thejetToken_;
         std::vector<edm::InputTag> inputTagJets_;
 
         EDGetTokenT<View<flashgg::Electron> > electronToken_;
@@ -75,23 +75,18 @@ namespace flashgg {
         double jetPtThreshold_;
         double jetEtaThreshold_;
         double muPFIsoSumRelThreshold_;
-        //			double PuIDCutoffThreshold_;
         double PhoMVAThreshold_;
         double METThreshold_;
-
+        bool useVertex0only_;
+        
         double deltaRJetMuonThreshold_;
         double deltaRJetElectronThreshold_;
         double invMassLepLowThreshold_;
         double invMassLepHighThreshold_;
-        double numberOfLowPtMuonsThreshold_;
-        double numberOfHighPtMuonsThreshold_;
-        double leptonLowPtThreshold_;
-        double deltaRLowPtMuonPhoThreshold_;
 
         double deltaRPhoLeadJet_;
         double deltaRPhoSubLeadJet_;
 
-        double ElectronPtThreshold_;
         double DeltaRTrkElec_;
         double TransverseImpactParam_;
         double LongitudinalImpactParam_;
@@ -99,11 +94,6 @@ namespace flashgg {
         double deltaRPhoElectronThreshold_;
         double deltaMassElectronZThreshold_;
 
-        bool hasGoodMuons_highPt = false;
-        bool hasGoodMuons_lowPt = false;
-
-        bool hasGoodElectrons_highPt = false;
-        bool hasGoodElectrons_lowPt = false;
 
         vector<double> nonTrigMVAThresholds_;
         vector<double> nonTrigMVAEtaCuts_;
@@ -115,9 +105,8 @@ namespace flashgg {
         
     };
 
-    VHTightTagProducer::VHTightTagProducer( const ParameterSet &iConfig ) :
+    VHLeptonicLooseTagProducer::VHLeptonicLooseTagProducer( const ParameterSet &iConfig ) :
         diPhotonToken_( consumes<View<flashgg::DiPhotonCandidate> >( iConfig.getParameter<InputTag> ( "DiPhotonTag" ) ) ),
-        //thejetToken_( consumes<View<flashgg::Jet> >( iConfig.getParameter<InputTag>( "JetTag" ) ) ),
         inputTagJets_( iConfig.getParameter<std::vector<edm::InputTag> >( "inputTagJets" ) ),
         electronToken_( consumes<View<flashgg::Electron> >( iConfig.getParameter<InputTag> ( "ElectronTag" ) ) ),
         muonToken_( consumes<View<flashgg::Muon> >( iConfig.getParameter<InputTag>( "MuonTag" ) ) ),
@@ -143,19 +132,15 @@ namespace flashgg {
         muPFIsoSumRelThreshold_ = iConfig.getParameter<double>( "muPFIsoSumRelThreshold");
         PhoMVAThreshold_ = iConfig.getParameter<double>( "PhoMVAThreshold");
         METThreshold_ = iConfig.getParameter<double>( "METThreshold");
-
+        useVertex0only_              = iConfig.getParameter<bool>("useVertex0only");
+        
         deltaRJetMuonThreshold_ = iConfig.getParameter<double>( "deltaRJetMuonThreshold");
         deltaRJetElectronThreshold_ = iConfig.getParameter<double>( "deltaRJetElectronThreshold");
         invMassLepLowThreshold_ = iConfig.getParameter<double>( "invMassLepLowThreshold");
         invMassLepHighThreshold_ = iConfig.getParameter<double>( "invMassLepHighThreshold");
-        numberOfLowPtMuonsThreshold_ = iConfig.getParameter<double>( "numberOfLowPtMuonsThreshold");
-        numberOfHighPtMuonsThreshold_ = iConfig.getParameter<double>( "numberOfHighPtMuonsThreshold");
-        leptonLowPtThreshold_ = iConfig.getParameter<double>( "leptonLowPtThreshold");
-        deltaRLowPtMuonPhoThreshold_ = iConfig.getParameter<double>( "deltaRLowPtMuonPhoThreshold");
         deltaRPhoLeadJet_ = iConfig.getParameter<double>( "deltaRPhoLeadJet");
         deltaRPhoSubLeadJet_ = iConfig.getParameter<double>( "deltaRPhoSubLeadJet");
 
-        ElectronPtThreshold_ = iConfig.getParameter<double>( "ElectronPtThreshold");
         DeltaRTrkElec_ = iConfig.getParameter<double>( "DeltaRTrkElec");
         TransverseImpactParam_ = iConfig.getParameter<double>( "TransverseImpactParam");
         LongitudinalImpactParam_ = iConfig.getParameter<double>( "LongitudinalImpactParam");
@@ -173,16 +158,13 @@ namespace flashgg {
             auto token = consumes<View<flashgg::Jet> >(inputTagJets_[i]);
             tokenJets_.push_back(token);
         }
-        produces<vector<VHTightTag> >();
+        produces<vector<VHLeptonicLooseTag> >();
         produces<vector<VHTagTruth> >();
     }
 
-    void VHTightTagProducer::produce( Event &evt, const EventSetup & )
+    void VHLeptonicLooseTagProducer::produce( Event &evt, const EventSetup & )
     {
 
-        //Handle<View<flashgg::Jet> > theJets;
-        //evt.getByToken( thejetToken_, theJets );
-        //const PtrVector<flashgg::Jet>& jetPointers = theJets->ptrVector();
         JetCollectionVector Jets( inputTagJets_.size() );
         for( size_t j = 0; j < inputTagJets_.size(); ++j ) {
             evt.getByToken( tokenJets_[j], Jets[j] );
@@ -190,23 +172,19 @@ namespace flashgg {
         
         Handle<View<flashgg::DiPhotonCandidate> > diPhotons;
         evt.getByToken( diPhotonToken_, diPhotons );
-        //const PtrVector<flashgg::DiPhotonCandidate>& diPhotonPointers = diPhotons->ptrVector();
 
         Handle<View<flashgg::Muon> > theMuons;
         evt.getByToken( muonToken_, theMuons );
-        //const PtrVector<flashgg::Muon>& muonPointers = theMuons->ptrVector();
 
         Handle<View<flashgg::Electron> > theElectrons;
         evt.getByToken( electronToken_, theElectrons );
-        //const PtrVector<flashgg::Electron>& electronPointers = theElectrons->ptrVector();
 
         Handle<View<flashgg::DiPhotonMVAResult> > mvaResults;
         evt.getByToken( mvaResultToken_, mvaResults );
-        //const PtrVector<flashgg::DiPhotonMVAResult>& mvaResultPointers = mvaResults->ptrVector();
 
         Handle<View<reco::GenParticle> > genParticles;
 
-        std::auto_ptr<vector<VHTightTag> > VHTightTags( new vector<VHTightTag> );
+        std::auto_ptr<vector<VHLeptonicLooseTag> > VHLeptonicLooseTags( new vector<VHLeptonicLooseTag> );
         std::auto_ptr<vector<VHTagTruth> > truths( new vector<VHTagTruth> );
 
         Point higgsVtx;
@@ -237,7 +215,6 @@ namespace flashgg {
                 if(!triggerBits->accept(i))
                     for(size_t j=0;j<flagList.size();j++)
                         {
-                            //if(flagList(j)==triggerNames.triggerName(i))                                                                                                                         
                             if(flagList[j]==triggerNames.triggerName(i))
                                 {
                                     passMETfilters=0;
@@ -317,11 +294,9 @@ namespace flashgg {
 
         Handle<View<flashgg::Met> > METs;
         evt.getByToken( METToken_, METs );
-//const PtrVector<pat::MET>& METPointers = METs->ptrVector();
 
         Handle<View<reco::Vertex> > vertices;
         evt.getByToken( vertexToken_, vertices );
-//const PtrVector<reco::Vertex>& vertexPointers = vertices->ptrVector();
 
         assert( diPhotons->size() == mvaResults->size() );
 
@@ -329,48 +304,29 @@ namespace flashgg {
         double idmva1 = 0.;
         double idmva2 = 0.;
 
-        bool isMuonHighPt = false;
-        bool isMuonLowPt = false;
-        bool isInvMassOK = false;
-
-        bool isElectronHighPt = false;
-        bool isElectronLowPt = false;
-        bool isInvMassOK_elec = false;
+        //bool tagged_muon =0;
+        //bool tagged_electron =0;
 
         for( unsigned int diphoIndex = 0; diphoIndex < diPhotons->size(); diphoIndex++ ) {
-            hasGoodMuons_highPt = false;
-            hasGoodMuons_lowPt = false;
-            hasGoodElectrons_highPt = false;
-            hasGoodElectrons_lowPt = false;
             if(!passMETfilters)
                 {
                     continue;
                 }
+            if(useVertex0only_)
+                if(diPhotons->ptrAt(diphoIndex)->vertexIndex()!=0)
+                    continue;
             unsigned int jetCollectionIndex = diPhotons->ptrAt( diphoIndex )->jetCollectionIndex();
             
-            std::vector<edm::Ptr<flashgg::Muon> > tagMuons_highPt;
-            std::vector<edm::Ptr<flashgg::Muon> > tagMuons_lowPt;
             std::vector<edm::Ptr<flashgg::Muon> > tagMuons;
-            std::vector<edm::Ptr<Electron> > tagElectrons_highPt;
-            std::vector<edm::Ptr<Electron> > tagElectrons_lowPt;
-            std::vector<edm::Ptr<Electron> > tagElectrons;
-
-            isMuonHighPt = false;
-            isMuonLowPt = false;
-            isInvMassOK = false;
-
-            isElectronHighPt = false;
-            isElectronLowPt = false;
-            isInvMassOK_elec = false;
+            std::vector<edm::Ptr<flashgg::Electron> > tagElectrons;
 
             std::vector<edm::Ptr<Jet> > tagJets;
-            //std::vector<edm::Ptr<flashgg::Met> > tagMETs;
-
+            
             edm::Ptr<flashgg::DiPhotonCandidate> dipho = diPhotons->ptrAt( diphoIndex );
             edm::Ptr<flashgg::DiPhotonMVAResult> mvares = mvaResults->ptrAt( diphoIndex );
 
-            VHTightTag VHTightTags_obj( dipho, mvares );
-            VHTightTags_obj.includeWeights( *dipho );
+            VHLeptonicLooseTag VHLeptonicLooseTags_obj( dipho, mvares );
+            VHLeptonicLooseTags_obj.includeWeights( *dipho );
             if( dipho->leadingPhoton()->pt() < ( dipho->mass() )*leadPhoOverMassThreshold_ ) { continue; }
             if( dipho->subLeadingPhoton()->pt() < ( dipho->mass() )*subleadPhoOverMassThreshold_ ) { continue; }
             idmva1 = dipho->leadingPhoton()->phoIdMvaDWrtVtx( dipho->vtx() );
@@ -379,89 +335,28 @@ namespace flashgg {
             if( mvares->result < MVAThreshold_ ) { continue; }
 
             photonSelection = true;
-            tagMuons_highPt = selectMuons( theMuons->ptrs(), dipho, vertices->ptrs(), muonEtaThreshold_, leptonPtThreshold_, muPFIsoSumRelThreshold_,
-                                           deltaRMuonPhoThreshold_, deltaRMuonPhoThreshold_ );
-            tagMuons_lowPt = selectMuons( theMuons->ptrs(), dipho, vertices->ptrs(), muonEtaThreshold_, leptonLowPtThreshold_, muPFIsoSumRelThreshold_,
-                                          deltaRLowPtMuonPhoThreshold_, deltaRLowPtMuonPhoThreshold_ );
-            hasGoodMuons_highPt = ( tagMuons_highPt.size() > 0 );
-            hasGoodMuons_lowPt = ( tagMuons_lowPt.size() > 0 );
-
-            tagElectrons_highPt = selectStdElectrons( theElectrons->ptrs(), dipho, vertices->ptrs(), leptonPtThreshold_,  electronEtaThresholds_,
-                                                      useElectronMVARecipe_,useElectronLooseID_,
-                                                      deltaRPhoElectronThreshold_,DeltaRTrkElec_,deltaMassElectronZThreshold_);
+            tagMuons = selectMuons( theMuons->ptrs(), dipho, vertices->ptrs(), muonEtaThreshold_, leptonPtThreshold_, muPFIsoSumRelThreshold_,
+                                    deltaRMuonPhoThreshold_, deltaRMuonPhoThreshold_ );
             
-            tagElectrons_lowPt = selectStdElectrons( theElectrons->ptrs(), dipho, vertices->ptrs(), leptonLowPtThreshold_, electronEtaThresholds_,
-                                                     useElectronMVARecipe_,useElectronLooseID_,
-                                                     deltaRPhoElectronThreshold_,DeltaRTrkElec_,deltaMassElectronZThreshold_);
+            tagElectrons = selectStdElectrons( theElectrons->ptrs(), dipho, vertices->ptrs(), leptonPtThreshold_,  electronEtaThresholds_,
+                                               useElectronMVARecipe_,useElectronLooseID_,
+                                               deltaRPhoElectronThreshold_,DeltaRTrkElec_,deltaMassElectronZThreshold_);
+            
 
         
-            //std::vector<edm::Ptr<Electron> > goodElectrons = selectStdElectrons( theElectrons->ptrs(), dipho, vertices->ptrs(), leptonPtThreshold_, 
-            //                                                                 TransverseImpactParam_, LongitudinalImpactParam_, nonTrigMVAThresholds_, nonTrigMVAEtaCuts_,
-            //                                                                    electronIsoThreshold_, electronNumOfHitsThreshold_, electronEtaThresholds_ ,
-            //                                                                    deltaRPhoElectronThreshold_,DeltaRTrkElec_,deltaMassElectronZThreshold_);
-
-            
-            hasGoodElectrons_highPt = ( tagElectrons_highPt.size() > 0 );
-            hasGoodElectrons_lowPt = ( tagElectrons_lowPt.size() > 0 );
-
-            if( !hasGoodMuons_highPt && !hasGoodMuons_lowPt && !hasGoodElectrons_highPt && !hasGoodElectrons_lowPt ) { continue; }
-            //std::cout << "tight tag has leptons" << std::endl;
-            if( !hasGoodMuons_highPt && !hasGoodElectrons_highPt && !hasGoodElectrons_lowPt ) {
-                if( tagMuons_lowPt.size() >= 2 ) 
+            if( !(tagElectrons.size() > 0) && !(tagMuons.size()>0) ) { continue; }
+            /*  
+                //uncomment if we want to keep track of lepton vs muon tagged event
+            if( tagMuons.size() >= 1) 
                     {
-                        isMuonLowPt = true;
-                        float invMass2 = 2 * tagMuons_lowPt[0]->pt() * tagMuons_lowPt[1]->pt() * ( cosh( tagMuons_lowPt[0]->eta() - tagMuons_lowPt[1]->eta() ) - cos(tagMuons_lowPt[0]->phi() - tagMuons_lowPt[1]->phi() ) );
-                        if( sqrt( invMass2 ) < invMassLepHighThreshold_  && sqrt( invMass2 ) > invMassLepLowThreshold_ ) {
-                            tagMuons = tagMuons_lowPt;
-                            isInvMassOK = true;
-                        }
+                        tagged_muons= true;
                     }
-            }
-
-            if( hasGoodMuons_highPt && !hasGoodElectrons_highPt && !hasGoodElectrons_lowPt ) {
-                if( tagMuons_highPt.size() == 1 ) {
-                    tagMuons = tagMuons_highPt;
-                    isMuonHighPt = true;
-                }
-                if( tagMuons_highPt.size() >= 2 ) {
-                    isMuonLowPt = true;
-                    float invMass2_high = 2 * tagMuons_highPt[0]->pt() * tagMuons_highPt[1]->pt() * ( cosh( tagMuons_highPt[0]->eta() - tagMuons_highPt[1]->eta() ) - cos(tagMuons_highPt[0]->phi() - tagMuons_highPt[1]->phi() ) );
-                    if( sqrt( invMass2_high ) < invMassLepHighThreshold_ && sqrt( invMass2_high ) > invMassLepLowThreshold_ ) {
-                        tagMuons = tagMuons_highPt;
-                        isInvMassOK = true;
+            if( tagElectrons.size() >= 1) 
+                    {
+                        tagged_electrons = true;
                     }
-
-                }
-            }
-
-            
-            if( !hasGoodElectrons_highPt && !hasGoodMuons_highPt && !hasGoodMuons_lowPt ) {
-                if( tagElectrons_lowPt.size() >= 2 ) {
-                    isElectronLowPt = true;
-                    float invMass2 = 2 * tagElectrons_lowPt[0]->pt() * tagElectrons_lowPt[1]->pt() * ( cosh( tagElectrons_lowPt[0]->eta() - tagElectrons_lowPt[1]->eta() ) - cos(
-                                         tagElectrons_lowPt[0]->phi() - tagElectrons_lowPt[1]->phi() ) );
-                    if( sqrt( invMass2 ) < invMassLepHighThreshold_  && sqrt( invMass2 ) > invMassLepLowThreshold_ ) {
-                        tagElectrons = tagElectrons_lowPt;
-                        isInvMassOK_elec = true;
-                    }
-                }
-            }
-            if( hasGoodElectrons_highPt && !hasGoodMuons_highPt && !hasGoodMuons_lowPt ) {
-                if( tagElectrons_highPt.size() == 1 ) {
-                    tagElectrons = tagElectrons_highPt;
-                    isElectronHighPt = true;
-                }
-                if( tagElectrons_highPt.size() >= 2 ) {
-                    isElectronLowPt = true;
-                    float invMass2_high = 2 * tagElectrons_highPt[0]->pt() * tagElectrons_highPt[1]->pt() * ( cosh( tagElectrons_highPt[0]->eta() - tagElectrons_highPt[1]->eta() )
-                                          - cos( tagElectrons_highPt[0]->phi() - tagElectrons_highPt[1]->phi() ) );
-                    if( sqrt( invMass2_high ) < invMassLepHighThreshold_ && sqrt( invMass2_high ) > invMassLepLowThreshold_ ) {
-                        tagElectrons = tagElectrons_highPt;
-                        isInvMassOK_elec = true;
-                    }
-                }
-            }
-            
+            */
+            //count jets that don't overlap with leptons
             for( unsigned int candIndex_outer = 0; candIndex_outer < Jets[jetCollectionIndex]->size() ; candIndex_outer++ ) 
                 {
                     bool keepJet=true;
@@ -498,20 +393,15 @@ namespace flashgg {
             
             if( METs->size() != 1 ) { std::cout << "WARNING - #MET is not 1" << std::endl;}
             Ptr<flashgg::Met> theMET = METs->ptrAt( 0 );
-            //if( ( isMuonHighPt || isElectronHighPt ) && theMET->pt() > METThreshold_ ) {
-            //tagMETs.push_back( theMET );
-            // }
-            //            std::cout << "tight met value: " << theMET->getCorPt() << std::endl;
-            if( photonSelection && ( ( ( isMuonHighPt && theMET->getCorPt() >METThreshold_  && tagJets.size() < jetsNumberThreshold_ ) || ( isMuonLowPt && isInvMassOK ) ) ||
-                                     ( isElectronHighPt && theMET->getCorPt() > METThreshold_ && tagJets.size() < jetsNumberThreshold_ ) || ( isElectronLowPt && isInvMassOK_elec ) ) ) {
-                VHTightTags_obj.setJets( tagJets );
-                VHTightTags_obj.setMuons( tagMuons );
-                VHTightTags_obj.setElectrons( tagElectrons );
-                //                VHTightTags_obj.setMET( tagMETs );
-                VHTightTags_obj.setMET( theMET );
-                VHTightTags_obj.setDiPhotonIndex( diphoIndex );
-                VHTightTags_obj.setSystLabel( systLabel_ );
-                VHTightTags->push_back( VHTightTags_obj );
+            //if no leptons, it fails well before this.
+            if( photonSelection && theMET->getCorPt()< METThreshold_ && tagJets.size()< jetsNumberThreshold_ ) {
+                VHLeptonicLooseTags_obj.setJets( tagJets );
+                VHLeptonicLooseTags_obj.setMuons( tagMuons );
+                VHLeptonicLooseTags_obj.setElectrons( tagElectrons );
+                VHLeptonicLooseTags_obj.setMET( theMET );
+                VHLeptonicLooseTags_obj.setDiPhotonIndex( diphoIndex );
+                VHLeptonicLooseTags_obj.setSystLabel( systLabel_ );
+                VHLeptonicLooseTags->push_back( VHLeptonicLooseTags_obj );
                 if( ! evt.isRealData() ) {
                     VHTagTruth truth_obj;
                     truth_obj.setGenPV( higgsVtx );
@@ -524,17 +414,17 @@ namespace flashgg {
                     truth_obj.setVhasMissingLeptons( VhasMissingLeptons );
                     truth_obj.setVpt( Vpt );
                     truths->push_back( truth_obj );
-                    VHTightTags->back().setTagTruth( edm::refToPtr( edm::Ref<vector<VHTagTruth> >( rTagTruth, idx++ ) ) );
+                    VHLeptonicLooseTags->back().setTagTruth( edm::refToPtr( edm::Ref<vector<VHTagTruth> >( rTagTruth, idx++ ) ) );
                 }
             }
         }
-        evt.put( VHTightTags );
+        evt.put( VHLeptonicLooseTags );
         evt.put( truths );
     }
 
 }
-typedef flashgg::VHTightTagProducer FlashggVHTightTagProducer;
-DEFINE_FWK_MODULE( FlashggVHTightTagProducer );
+typedef flashgg::VHLeptonicLooseTagProducer FlashggVHLeptonicLooseTagProducer;
+DEFINE_FWK_MODULE( FlashggVHLeptonicLooseTagProducer );
 // Local Variables:
 // mode:c++
 // indent-tabs-mode:nil

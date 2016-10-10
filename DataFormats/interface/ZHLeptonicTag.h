@@ -1,5 +1,5 @@
-#ifndef FLASHgg_VHTightTag_h
-#define FLASHgg_VHTightTag_h
+#ifndef FLASHgg_ZHLeptonicTag_h
+#define FLASHgg_ZHLeptonicTag_h
 
 #include "flashgg/DataFormats/interface/DiPhotonTagBase.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -10,15 +10,15 @@
 
 namespace flashgg {
 
-    class VHTightTag: public DiPhotonTagBase
+    class ZHLeptonicTag: public DiPhotonTagBase
     {
     public:
-        VHTightTag();
-        VHTightTag( edm::Ptr<DiPhotonCandidate>, edm::Ptr<DiPhotonMVAResult> );
-        VHTightTag( edm::Ptr<DiPhotonCandidate>, DiPhotonMVAResult );
-        ~VHTightTag();
+        ZHLeptonicTag();
+        ZHLeptonicTag( edm::Ptr<DiPhotonCandidate>, edm::Ptr<DiPhotonMVAResult> );
+        ZHLeptonicTag( edm::Ptr<DiPhotonCandidate>, DiPhotonMVAResult );
+        ~ZHLeptonicTag();
 
-        VHTightTag *clone() const override { return ( new VHTightTag( *this ) ); }
+        ZHLeptonicTag *clone() const override { return ( new ZHLeptonicTag( *this ) ); }
         
         const std::vector<edm::Ptr<Muon> > muons() const { return Muons_;}
         const std::vector<edm::Ptr<flashgg::Electron> > electrons() const {return Electrons_;}
@@ -30,7 +30,7 @@ namespace flashgg {
         void setMET( edm::Ptr<flashgg::Met> MET ) {MET_ = MET;}
         void setElectrons( std::vector<edm::Ptr<Electron> > Electrons ) {Electrons_ = Electrons;}
 
-        DiPhotonTagBase::tag_t tagEnum() const override {return DiPhotonTagBase::kVHTight; }
+        DiPhotonTagBase::tag_t tagEnum() const override {return DiPhotonTagBase::kZHLeptonic; }
 
     private:
         std::vector<edm::Ptr<Muon> > Muons_;

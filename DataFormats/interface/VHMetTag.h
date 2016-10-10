@@ -1,5 +1,5 @@
-#ifndef FLASHgg_VHEtTag_h
-#define FLASHgg_VHEtTag_h
+#ifndef FLASHgg_VHMetTag_h
+#define FLASHgg_VHMetTag_h
 
 //#include "DataFormats/PatCandidates/interface/MET.h"
 #include "flashgg/DataFormats/interface/Met.h"
@@ -7,22 +7,22 @@
 
 namespace flashgg {
 
-    class VHEtTag: public DiPhotonTagBase
+    class VHMetTag: public DiPhotonTagBase
     {
     public:
-        VHEtTag();
-        ~VHEtTag();
+        VHMetTag();
+        ~VHMetTag();
 
-        VHEtTag( edm::Ptr<DiPhotonCandidate>, edm::Ptr<DiPhotonMVAResult> );
-        VHEtTag( edm::Ptr<DiPhotonCandidate>, DiPhotonMVAResult );
+        VHMetTag( edm::Ptr<DiPhotonCandidate>, edm::Ptr<DiPhotonMVAResult> );
+        VHMetTag( edm::Ptr<DiPhotonCandidate>, DiPhotonMVAResult );
 
-        VHEtTag *clone() const override { return ( new VHEtTag( *this ) ); }
+        VHMetTag *clone() const override { return ( new VHMetTag( *this ) ); }
 
         const edm::Ptr<flashgg::Met> met() const {return theMet_;}
         const edm::Ptr<DiPhotonCandidate> diPhotonCandidate() const { return theDiPhotonCandidate_;}
         void setMet( edm::Ptr<flashgg::Met> );
 
-        DiPhotonTagBase::tag_t tagEnum() const override {return DiPhotonTagBase::kVHEt; }
+        DiPhotonTagBase::tag_t tagEnum() const override {return DiPhotonTagBase::kVHMet; }
 
     private:
         edm::Ptr<DiPhotonCandidate> theDiPhotonCandidate_;

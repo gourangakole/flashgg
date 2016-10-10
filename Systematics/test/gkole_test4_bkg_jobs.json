@@ -1,0 +1,8 @@
+{
+    "processes" : {
+	"dipho" : [ "/DiPhotonJetsBox_MGG-80toInf_13TeV-Sherpa" ],
+	"gjet" : [ "/GJet_Pt-20to40_DoubleEMEnriched_MGG-80toInf_TuneCUETP8M1_13TeV_Pythia8" ]
+	
+     }
+        "cmdLine" : "campaign=RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2_Workspaces"
+}

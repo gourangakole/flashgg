@@ -26,7 +26,7 @@ elif os.environ["CMSSW_VERSION"].count("CMSSW_8_0"):
 else:
     raise Exception,"Could not find a sensible CMSSW_VERSION for default globaltag"
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(4000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 100 )
 
 print "debug1"
@@ -195,7 +195,7 @@ process.source = cms.Source ("PoolSource",
 ))
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("test2.root"))
+                                   fileName = cms.string("test.root"))
 
 process.extraDumpers = cms.Sequence()
 process.load("flashgg.Taggers.diphotonTagDumper_cfi") ##  import diphotonTagDumper 
@@ -236,33 +236,6 @@ else:
         ["TTHLeptonicTag",0]
         ]
 
-# gkole variables test
-
-temp_dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
-                 "dipho_cosphi     := abs(cos(diPhoton.leadingPhoton.phi - diPhoton.subLeadingPhoton.phi))",
-                 "mass             := diPhoton.mass",
-                 "leadPt           := diPhoton.leadingPhoton.pt",
-                 "leadEt           := diPhoton.leadingPhoton.et",
-                 "leadEta          := diPhoton.leadingPhoton.eta",
-                 "leadPhi          := diPhoton.leadingPhoton.phi",
-                 "lead_sieie       := diPhoton.leadingPhoton.sigmaIetaIeta",
-                 "lead_hoe         := diPhoton.leadingPhoton.hadronicOverEm",
-                 "lead_sigmaEoE    := diPhoton.leadingPhoton.sigEOverE",
-                 "lead_ptoM        := diPhoton.leadingPhoton.pt/diPhoton.mass",
-                 "leadR9           := diPhoton.leadingPhoton.r9",
-                 "subleadPt        := diPhoton.subLeadingPhoton.pt",
-                 "subleadEt        := diPhoton.subLeadingPhoton.et",
-                 "subleadEta       := diPhoton.subLeadingPhoton.eta",
-                 "subleadPhi       := diPhoton.subLeadingPhoton.phi",
-                 "sublead_sieie    := diPhoton.subLeadingPhoton.sigmaIetaIeta",
-                 "sublead_hoe      := diPhoton.subLeadingPhoton.hadronicOverEm",
-                 "sublead_sigmaEoE := diPhoton.subLeadingPhoton.sigEOverE",
-                 "sublead_ptoM     := diPhoton.subLeadingPhoton.pt/diPhoton.mass",
-                 "subleadR9        := diPhoton.subLeadingPhoton.r9",
-                 "leadIDMVA        := diPhoton.leadingView.phoIdMvaWrtChosenVtx",
-                 "subleadIDMVA     := diPhoton.subLeadingView.phoIdMvaWrtChosenVtx",
-    ]
-
 definedSysts=set()
 process.tagsDumper.classifierCfg.remap=cms.untracked.VPSet()
 for tag in tagList: 
@@ -301,7 +274,7 @@ for tag in tagList:
                            classname=tagName,
                            cutbased=cutstring,
                            subcats=tagCats, 
-                           variables=currentVariables+temp_dipho_variables,
+                           variables=currentVariables,
                            histograms=minimalHistograms,
                            binnedOnly=isBinnedOnly,
                            dumpPdfWeights=dumpPdfWeights,

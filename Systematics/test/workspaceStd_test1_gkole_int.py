@@ -26,7 +26,7 @@ elif os.environ["CMSSW_VERSION"].count("CMSSW_8_0"):
 else:
     raise Exception,"Could not find a sensible CMSSW_VERSION for default globaltag"
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 100 )
 
 print "debug1"
@@ -66,6 +66,9 @@ customize.options.register('acceptance',
 # import flashgg customization to check if we have signal or background
 from flashgg.MetaData.JobConfig import customize
 customize.parse()
+
+
+print "doFiducial", customize.doFiducial
 
 if customize.doFiducial == 'True':
     matchCut = "leadingPhoton.hasMatchedGenPhoton() && subLeadingPhoton.hasMatchedGenPhoton()"
@@ -175,8 +178,9 @@ from flashgg.MetaData.samples_utils import SamplesManager
 process.source = cms.Source ("PoolSource",
                              fileNames = cms.untracked.vstring(
 #"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VBFHToGG_M125_13TeV_amcatnlo_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext2-v1/160707_150558/0000/myMicroAODOutputFile_25.root"
+"root://eoscms//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M125_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/160707_151052/0000/myMicroAODOutputFile_12.root"
 
-"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M130_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/160707_151412/0000/myMicroAODOutputFile_3.root"
+#"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M130_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/160707_151412/0000/myMicroAODOutputFile_3.root"
 
 #"file:/afs/cern.ch/work/s/sethzenz/fromscratch107/CMSSW_8_0_8_patch1/src/flashgg/myMicroAODOutputFile.root"
 #"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_0_0-25ns/2_0_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_0_0-25ns-2_0_0-v0-RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/160524_093752/0000/myMicroAODOutputFile_1.root"
@@ -195,7 +199,7 @@ process.source = cms.Source ("PoolSource",
 ))
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("test2.root"))
+                                   fileName = cms.string("test.root"))
 
 process.extraDumpers = cms.Sequence()
 process.load("flashgg.Taggers.diphotonTagDumper_cfi") ##  import diphotonTagDumper 
@@ -236,33 +240,6 @@ else:
         ["TTHLeptonicTag",0]
         ]
 
-# gkole variables test
-
-temp_dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
-                 "dipho_cosphi     := abs(cos(diPhoton.leadingPhoton.phi - diPhoton.subLeadingPhoton.phi))",
-                 "mass             := diPhoton.mass",
-                 "leadPt           := diPhoton.leadingPhoton.pt",
-                 "leadEt           := diPhoton.leadingPhoton.et",
-                 "leadEta          := diPhoton.leadingPhoton.eta",
-                 "leadPhi          := diPhoton.leadingPhoton.phi",
-                 "lead_sieie       := diPhoton.leadingPhoton.sigmaIetaIeta",
-                 "lead_hoe         := diPhoton.leadingPhoton.hadronicOverEm",
-                 "lead_sigmaEoE    := diPhoton.leadingPhoton.sigEOverE",
-                 "lead_ptoM        := diPhoton.leadingPhoton.pt/diPhoton.mass",
-                 "leadR9           := diPhoton.leadingPhoton.r9",
-                 "subleadPt        := diPhoton.subLeadingPhoton.pt",
-                 "subleadEt        := diPhoton.subLeadingPhoton.et",
-                 "subleadEta       := diPhoton.subLeadingPhoton.eta",
-                 "subleadPhi       := diPhoton.subLeadingPhoton.phi",
-                 "sublead_sieie    := diPhoton.subLeadingPhoton.sigmaIetaIeta",
-                 "sublead_hoe      := diPhoton.subLeadingPhoton.hadronicOverEm",
-                 "sublead_sigmaEoE := diPhoton.subLeadingPhoton.sigEOverE",
-                 "sublead_ptoM     := diPhoton.subLeadingPhoton.pt/diPhoton.mass",
-                 "subleadR9        := diPhoton.subLeadingPhoton.r9",
-                 "leadIDMVA        := diPhoton.leadingView.phoIdMvaWrtChosenVtx",
-                 "subleadIDMVA     := diPhoton.subLeadingView.phoIdMvaWrtChosenVtx",
-    ]
-
 definedSysts=set()
 process.tagsDumper.classifierCfg.remap=cms.untracked.VPSet()
 for tag in tagList: 
@@ -301,7 +278,7 @@ for tag in tagList:
                            classname=tagName,
                            cutbased=cutstring,
                            subcats=tagCats, 
-                           variables=currentVariables+temp_dipho_variables,
+                           variables=currentVariables,
                            histograms=minimalHistograms,
                            binnedOnly=isBinnedOnly,
                            dumpPdfWeights=dumpPdfWeights,
@@ -328,12 +305,16 @@ if customize.processId == "Data":
         process.dataRequirements += process.eeBadScFilter
 
 # Split WH and ZH
+print "debug3"
 process.genFilter = cms.Sequence()
 if (customize.processId.count("wh") or customize.processId.count("zh")) and not customize.processId.count("wzh"):
     process.load("flashgg/Systematics/VHFilter_cfi")
     process.genFilter += process.VHFilter
     process.VHFilter.chooseW = bool(customize.processId.count("wh"))
     process.VHFilter.chooseZ = bool(customize.processId.count("zh"))
+    print "gkole WH on"
+
+# print "process.VHFilter.chooseW", process.VHFilter.chooseW    
 
 # Split out prompt-fake or fake-fake
 process.finalFilter = cms.Sequence()
@@ -426,5 +407,6 @@ process.flashggTagSorter.BlindedSelectionPrintout = True
 # set default options if needed
 customize.setDefault("maxEvents",300) #gkole
 customize.setDefault("targetLumi",1.00e+3) #gkole
+customize.setDefault("processId", "wh") #gkole
 # call the customization
 customize(process) #gkole

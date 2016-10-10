@@ -26,12 +26,13 @@ elif os.environ["CMSSW_VERSION"].count("CMSSW_8_0"):
 else:
     raise Exception,"Could not find a sensible CMSSW_VERSION for default globaltag"
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 100 )
 
 print "debug1"
 
 from flashgg.Systematics.SystematicsCustomize import *
+from flashgg.MicroAOD.flashggMets_cfi import flashggMets #gkole1
 jetSystematicsInputTags = createStandardSystematicsProducers(process)
 print 'debug2'
 
@@ -99,6 +100,32 @@ if customize.doFiducial == 'True':
 print 'here we print the tag sequence after'
 print process.flashggTagSequence
 
+print 'Temporary switch off the WH'
+process.flashggTagSequence.remove(process.flashggWHLeptonicTag)
+#process.flashggTagSorter.remove()
+process.flashggTagSorter.TagPriorityRanges = cms.VPSet(   cms.PSet(
+        TagName = cms.InputTag("flashggTTHLeptonicTag")
+        ), 
+                                                          cms.PSet(
+        TagName = cms.InputTag("flashggVHLooseTag")
+        ), 
+                                                          cms.PSet(
+        TagName = cms.InputTag("flashggVHEtTag")
+        ), 
+                                                          cms.PSet(
+        TagName = cms.InputTag("flashggTTHHadronicTag")
+        ), 
+                                                          cms.PSet(
+        TagName = cms.InputTag("flashggVBFTag")
+        ), 
+                                                          cms.PSet(
+        TagName = cms.InputTag("flashggUntagged")
+        ) ) 
+print 'gkole final tag sequence:'
+print process.flashggTagSequence
+
+
+
 if customize.doFiducial == 'True':
     print 'we do fiducial and we change tagsorter'
     process.flashggTagSorter.TagPriorityRanges = cms.VPSet(     cms.PSet(TagName = cms.InputTag('flashggSigmaMoMpToMTag')) )
@@ -158,6 +185,9 @@ else:
     variablesToUse = minimalNonSignalVariables
     customizeSystematicsForBackground(process)
 
+
+print "customize.processId after systematic addition", customize.processId
+
 print "--- Systematics  with independent collections ---"
 print systlabels
 print "-------------------------------------------------"
@@ -176,7 +206,13 @@ process.source = cms.Source ("PoolSource",
                              fileNames = cms.untracked.vstring(
 #"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VBFHToGG_M125_13TeV_amcatnlo_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext2-v1/160707_150558/0000/myMicroAODOutputFile_25.root"
 
-"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M130_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/160707_151412/0000/myMicroAODOutputFile_3.root"
+#"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M130_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/160707_151412/0000/myMicroAODOutputFile_3.root"
+
+
+#VH 125
+"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M125_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/160707_151052/0000/myMicroAODOutputFile_1.root",
+"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2/2_2_0/VHToGG_M125_13TeV_amcatnloFXFX_madspin_pythia8/RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2-2_2_0-v0-RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/160707_151052/0000/myMicroAODOutputFile_10.root"
+
 
 #"file:/afs/cern.ch/work/s/sethzenz/fromscratch107/CMSSW_8_0_8_patch1/src/flashgg/myMicroAODOutputFile.root"
 #"root://eoscms.cern.ch//eos/cms/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIISpring16DR80X-2_0_0-25ns/2_0_0/VBFHToGG_M-125_13TeV_powheg_pythia8/RunIISpring16DR80X-2_0_0-25ns-2_0_0-v0-RunIISpring16MiniAODv1-PUSpring16RAWAODSIM_80X_mcRun2_asymptotic_2016_v3-v1/160524_093752/0000/myMicroAODOutputFile_1.root"
@@ -226,8 +262,8 @@ if customize.doFiducial == 'True':
     tagList=[["SigmaMpTTag",3]]
 else:
     tagList=[
-        #["UntaggedTag",4], # gkole commented
-        #["VBFTag",2], # gkole commented
+        ["UntaggedTag",4], # gkole uncomment to test
+        ["VBFTag",2], # gkole uncomment to test
         #["VHTightTag",0],
         ["VHLooseTag",0], # gkole uncommented
         ["VHEtTag",0], # gkole uncommented
@@ -236,6 +272,7 @@ else:
         ["TTHLeptonicTag",0]
         ]
 
+print "tagList", tagList
 # gkole variables test
 
 temp_dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
@@ -261,13 +298,18 @@ temp_dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
                  "subleadR9        := diPhoton.subLeadingPhoton.r9",
                  "leadIDMVA        := diPhoton.leadingView.phoIdMvaWrtChosenVtx",
                  "subleadIDMVA     := diPhoton.subLeadingView.phoIdMvaWrtChosenVtx",
-    ]
+                      ]
 
+temp_met_variables=["pfMET_rawPt        := met.uncorPt", # gives the error                                                                                     
+                    "pfMET_rawPhi       := met.uncorPhi",
+                    ]
 definedSysts=set()
+
 process.tagsDumper.classifierCfg.remap=cms.untracked.VPSet()
 for tag in tagList: 
   tagName=tag[0]
   tagCats=tag[1]
+  
   # remap return value of class-based classifier
   process.tagsDumper.classifierCfg.remap.append( cms.untracked.PSet( src=cms.untracked.string("flashgg%s"%tagName), dst=cms.untracked.string(tagName) ) )
   for systlabel in systlabels:
@@ -302,6 +344,7 @@ for tag in tagList:
                            cutbased=cutstring,
                            subcats=tagCats, 
                            variables=currentVariables+temp_dipho_variables,
+                           #variables=currentVariables+temp_dipho_variables+temp_met_variables,
                            histograms=minimalHistograms,
                            binnedOnly=isBinnedOnly,
                            dumpPdfWeights=dumpPdfWeights,
@@ -328,12 +371,14 @@ if customize.processId == "Data":
         process.dataRequirements += process.eeBadScFilter
 
 # Split WH and ZH
+print "debug3"
 process.genFilter = cms.Sequence()
 if (customize.processId.count("wh") or customize.processId.count("zh")) and not customize.processId.count("wzh"):
     process.load("flashgg/Systematics/VHFilter_cfi")
     process.genFilter += process.VHFilter
     process.VHFilter.chooseW = bool(customize.processId.count("wh"))
     process.VHFilter.chooseZ = bool(customize.processId.count("zh"))
+    print "WH/ZH on" 
 
 # Split out prompt-fake or fake-fake
 process.finalFilter = cms.Sequence()
@@ -348,6 +393,9 @@ if (customize.processId.count("qcd") or customize.processId.count("gjet")) and c
         process.PromptFakeFilter.doFakeFake =cms.bool(True)
     else:
         raise Exception,"Mis-configuration of python for prompt-fake filter"
+
+
+
 
 process.p = cms.Path(process.dataRequirements*
                      process.genFilter*
@@ -369,6 +417,7 @@ for mn in mns:
     elif hasattr(module,"DiPhotonTag"):
         print str(module),module.DiPhotonTag
 print
+print "debug4"
 printSystematicInfo(process)
 
 # Detailed tag interpretation information printout (blinded)
@@ -424,7 +473,7 @@ process.flashggTagSorter.BlindedSelectionPrintout = True
 
 
 # set default options if needed
-customize.setDefault("maxEvents",300) #gkole
-customize.setDefault("targetLumi",1.00e+3) #gkole
+# customize.setDefault("maxEvents",300) #gkole
+# customize.setDefault("targetLumi",1.00e+3) #gkole
 # call the customization
-customize(process) #gkole
+# customize(process) #gkole

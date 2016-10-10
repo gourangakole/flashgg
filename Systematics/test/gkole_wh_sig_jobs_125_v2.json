@@ -1,0 +1,6 @@
+{
+    "processes" : {
+     "qjet_125" : ["/VHToGG_M125_13TeV_amcatnloFXFX_madspin_pythia8"]
+     },	
+        "cmdLine" : "campaign=RunIISpring16DR80X-2_2_0-25ns_ICHEP16_MiniAODv2_Workspaces"
+}

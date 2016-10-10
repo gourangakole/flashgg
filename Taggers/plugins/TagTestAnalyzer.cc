@@ -30,6 +30,7 @@
 #include "flashgg/DataFormats/interface/VHEtTag.h"
 #include "flashgg/DataFormats/interface/VHLooseTag.h"
 #include "flashgg/DataFormats/interface/VHHadronicTag.h"
+#include "flashgg/DataFormats/interface/WHLeptonicTag.h"
 #include "flashgg/DataFormats/interface/VBFTagTruth.h"
 #include "flashgg/DataFormats/interface/ZPlusJetTag.h"
 
@@ -215,6 +216,15 @@ namespace flashgg {
                           << std::endl;
             }
 
+            const   WHLeptonicTag *whleptonictag = dynamic_cast<const WHLeptonicTag *>( chosenTag ); // gkole1
+            if( whleptonictag != NULL ) {
+                std::cout << "[WHLeptonic] Category " << whleptonictag->categoryNumber()
+                          << " nmuons=" << whleptonictag->muons().size()
+                          << " nelectrons=" << whleptonictag->electrons().size()
+                          << " systLabel " << whleptonictag->systLabel()
+                          << std::endl;
+            }
+            
             const   VHHadronicTag *vhhadronictag = dynamic_cast<const VHHadronicTag *>( chosenTag );
             if( vhhadronictag != NULL ) {
                 std::cout << "[VHhadronic] Category "    << vhhadronictag->categoryNumber()

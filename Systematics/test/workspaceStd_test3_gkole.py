@@ -26,7 +26,7 @@ elif os.environ["CMSSW_VERSION"].count("CMSSW_8_0"):
 else:
     raise Exception,"Could not find a sensible CMSSW_VERSION for default globaltag"
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 100 )
 
 print "debug1"
@@ -158,6 +158,9 @@ else:
     variablesToUse = minimalNonSignalVariables
     customizeSystematicsForBackground(process)
 
+
+print "customize.processId after systematic addition", customize.processId
+
 print "--- Systematics  with independent collections ---"
 print systlabels
 print "-------------------------------------------------"
@@ -226,8 +229,8 @@ if customize.doFiducial == 'True':
     tagList=[["SigmaMpTTag",3]]
 else:
     tagList=[
-        #["UntaggedTag",4], # gkole commented
-        #["VBFTag",2], # gkole commented
+        ["UntaggedTag",4], # gkole uncomment to test
+        ["VBFTag",2], # gkole uncomment to test
         #["VHTightTag",0],
         ["VHLooseTag",0], # gkole uncommented
         ["VHEtTag",0], # gkole uncommented
@@ -236,6 +239,7 @@ else:
         ["TTHLeptonicTag",0]
         ]
 
+print "tagList", tagList
 # gkole variables test
 
 temp_dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
@@ -264,10 +268,12 @@ temp_dipho_variables=["dipho_sumpt      := diPhoton.sumPt",
     ]
 
 definedSysts=set()
+
 process.tagsDumper.classifierCfg.remap=cms.untracked.VPSet()
 for tag in tagList: 
   tagName=tag[0]
   tagCats=tag[1]
+  
   # remap return value of class-based classifier
   process.tagsDumper.classifierCfg.remap.append( cms.untracked.PSet( src=cms.untracked.string("flashgg%s"%tagName), dst=cms.untracked.string(tagName) ) )
   for systlabel in systlabels:
@@ -328,12 +334,14 @@ if customize.processId == "Data":
         process.dataRequirements += process.eeBadScFilter
 
 # Split WH and ZH
+print "debug3"
 process.genFilter = cms.Sequence()
 if (customize.processId.count("wh") or customize.processId.count("zh")) and not customize.processId.count("wzh"):
     process.load("flashgg/Systematics/VHFilter_cfi")
     process.genFilter += process.VHFilter
     process.VHFilter.chooseW = bool(customize.processId.count("wh"))
     process.VHFilter.chooseZ = bool(customize.processId.count("zh"))
+    print "WH/ZH on" 
 
 # Split out prompt-fake or fake-fake
 process.finalFilter = cms.Sequence()
@@ -369,6 +377,7 @@ for mn in mns:
     elif hasattr(module,"DiPhotonTag"):
         print str(module),module.DiPhotonTag
 print
+print "debug4"
 printSystematicInfo(process)
 
 # Detailed tag interpretation information printout (blinded)

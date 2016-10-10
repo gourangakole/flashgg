@@ -23,6 +23,7 @@
 #include "flashgg/DataFormats/interface/VBFTag.h"
 #include "flashgg/DataFormats/interface/VHHadronicTag.h"
 #include "flashgg/DataFormats/interface/VHLooseTag.h"
+#include "flashgg/DataFormats/interface/WHLeptonicTag.h"
 #include "flashgg/DataFormats/interface/VHTightTag.h"
 #include "flashgg/DataFormats/interface/VHEtTag.h"
 #include "flashgg/DataFormats/interface/DiMuonCandidate.h"   //JTao
@@ -30,6 +31,7 @@
 #include "flashgg/DataFormats/interface/PhotonJetCandidate.h" //Martina
 #include "flashgg/DataFormats/interface/TagTruthBase.h"
 #include "flashgg/DataFormats/interface/VBFTagTruth.h"
+#include "flashgg/DataFormats/interface/VHTagTruth.h"
 #include "flashgg/DataFormats/interface/WeightedObject.h"
 #include "flashgg/DataFormats/interface/PDFWeightObject.h"
 #include "flashgg/DataFormats/interface/ZPlusJetTag.h"
@@ -194,6 +196,12 @@ namespace  {
 
         edm::Ptr<reco::GenParticle> ptr_genp;
 
+        flashgg::WHLeptonicTag whl;
+        std::vector<flashgg::WHLeptonicTag> vec_whl;
+        edm::Wrapper<std::vector<flashgg::WHLeptonicTag> > wrp_vec_whl;
+        edm::Ptr<pat::Electron> ptr_elec_whl;
+        edm::Ptr<pat::Muon> ptr_muon_whl;
+
         flashgg::TTHHadronicTag tthh;
         std::vector<flashgg::TTHHadronicTag> vec_tthh;
         edm::Wrapper<std::vector<flashgg::TTHHadronicTag> > wrp_vec_tthh;
@@ -235,6 +243,10 @@ namespace  {
         flashgg::VHEtTag vhet;
         std::vector<flashgg::VHEtTag> vec_vhet;
         edm::Wrapper<std::vector<flashgg::VHEtTag> > wrp_vec_vhet;
+        
+        flashgg::VHTagTruth vhtt;
+        std::vector<flashgg::VHTagTruth> vec_vhtt;
+        edm::Wrapper<std::vector<flashgg::VHTagTruth> > wrp_vec_vhtt;
 
         edm::Ptr<pat::Electron> ptr_elec_vht;
         edm::Ptr<pat::Muon> ptr_muon_vht;

@@ -1,0 +1,2 @@
+# NB this command is specific to the configuration at IC and is not gaurenteed elsewhere
+fggRunJobs.py --load gkole_test1_bkg_jobs.json -d bkg_jobs_v2 -x cmsRun workspaceStd_test1_gkole.py maxEvents=-1 -n 500 -q 8nh -D -P --no-copy-proxy --no-use-tarball 

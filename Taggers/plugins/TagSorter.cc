@@ -313,8 +313,8 @@ namespace flashgg {
             return string("VHEt");
         case DiPhotonTagBase::tag_t::kZHLeptonic:
             return string("ZHLeptonic");
-        case DiPhotonTagBase::tag_t::kWHLeptonic:
-            return string("WHLeptonic");
+            //        case DiPhotonTagBase::tag_t::kWHLeptonic:
+            //            return string("WHLeptonic");
         case DiPhotonTagBase::tag_t::kVHLeptonicLoose:
             return string("VHLeptonicLoose");
         case DiPhotonTagBase::tag_t::kVHMet:

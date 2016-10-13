@@ -95,13 +95,13 @@
 <class name="std::vector<flashgg::VHMetTag>"/>
 <class name="edm::Wrapper<std::vector<flashgg::VHMetTag> >"/>
 
-<class name="flashgg::WHLeptonicTag" ClassVersion="11">
-  <version ClassVersion="11" checksum="1465473074"/>
-  <version ClassVersion="10" checksum="1904294291"/>
-</class>
-<class name="std::vector<flashgg::WHLeptonicTag>"/>
-<class name="edm::Wrapper<std::vector<flashgg::WHLeptonicTag> >"/>
-
+<!--##<class name="flashgg::WHLeptonicTag" ClassVersion="11">
+##  <version ClassVersion="11" checksum="1465473074"/>
+##  <version ClassVersion="10" checksum="1904294291"/>
+##</class>
+##<class name="std::vector<flashgg::WHLeptonicTag>"/>
+##<class name="edm::Wrapper<std::vector<flashgg::WHLeptonicTag> >"/>
+-->
 <class name="flashgg::ZHLeptonicTag" ClassVersion="11">
   <version ClassVersion="11" checksum="1904294291"/>
   <version ClassVersion="10" checksum="1465473074"/>
@@ -139,12 +139,12 @@
   <version ClassVersion="10" checksum="1025135485"/>
 </class>
 
-<class name="flashgg::VHTagTruth" ClassVersion="10">
-  <version ClassVersion="10" checksum="2764404041"/>
-</class>
-<class name="std::vector<flashgg::VHTagTruth>"/>
-<class name="edm::Wrapper<std::vector<flashgg::VHTagTruth> >"/>
-
+<!--##<class name="flashgg::VHTagTruth" ClassVersion="10">
+##  <version ClassVersion="10" checksum="2764404041"/>
+##</class>
+##<class name="std::vector<flashgg::VHTagTruth>"/>
+##<class name="edm::Wrapper<std::vector<flashgg::VHTagTruth> >"/>
+-->
 <class name="std::vector<flashgg::VHLooseTag>"/>
 <class name="edm::Wrapper<std::vector<flashgg::VHLooseTag> >"/>
 <class name="flashgg::VHTightTag" ClassVersion="14">

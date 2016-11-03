@@ -164,6 +164,7 @@ class JobsManager(object):
     # -------------------------------------------------------------------------------------------------------------------
     def loadLsfMon(self):
         
+        print "READING","%s/task_config.json" % (self.options.outputDir)
         with open("%s/task_config.json" % (self.options.outputDir), "r" ) as cfin:
             task_config = json.loads(cfin.read())
         jobs = task_config["jobs"]

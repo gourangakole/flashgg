@@ -148,6 +148,11 @@ namespace flashgg {
         const pat::PackedGenParticle * matchedGenPhoton() const { return dynamic_cast<const pat::PackedGenParticle *>( userCand( "matchedGenPhoton" ).get() ); };
         bool hasMatchedGenPhoton() const { return hasUserCand( "matchedGenPhoton" ); };
 
+        void setMatchedGenElectron( const edm::Ptr<reco::GenParticle> gp ) { addUserCand( "matchedGenElectron", gp ); };
+        const reco::GenParticle * matchedGenElectron() const { return dynamic_cast<const reco::GenParticle *>( userCand( "matchedGenElectron" ).get() ); };
+        bool hasMatchedGenElectron() const { return hasUserCand( "matchedGenElectron" ); };
+
+
         void setGenMatchType( mcMatch_t typ ) { addUserInt( "genMatchType", ( int )typ ); };
         mcMatch_t  genMatchType() const { return ( hasUserInt( "genMatchType" ) ? ( mcMatch_t )userInt( "genMatchType" ) : kUnkown ); };
         bool  hasGenMatchType() const { return hasUserInt( "genMatchType" ); };

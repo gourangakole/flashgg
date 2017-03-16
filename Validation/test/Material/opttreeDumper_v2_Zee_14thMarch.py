@@ -132,7 +132,6 @@ cfgTools.addCategories(process.tagCandidateDumper,
                                   "hlt3 := triggerBit(2)",
                                   ##MET ????
                                   # PHOTON 1 
-                                  "genmatch1 := genMatchLead",
                                   "et1 := diPhoton.leadingPhoton.et",
                                   "pt1 := diPhoton.leadingPhoton.pt",
                                   "eta1 := diPhoton.leadingPhoton.superCluster.eta",
@@ -169,11 +168,16 @@ cfgTools.addCategories(process.tagCandidateDumper,
                                   "effSigma1 :=  diPhoton.leadingPhoton.esEffSigmaRR",
                                   "scraw1 :=  diPhoton.leadingPhoton.superCluster.rawEnergy",
                                   "ese1 :=  diPhoton.leadingPhoton.superCluster.preshowerEnergy",
-                                  "ptgen1 := ?diPhoton.leadingPhoton().hasMatchedGenPhoton()?diPhoton.leadingPhoton().matchedGenPhoton().pt():0",
-                                  "egen1:= ?diPhoton.leadingPhoton().hasMatchedGenPhoton()?diPhoton.leadingPhoton().matchedGenPhoton().energy():0",
+                                  # "ptgen1 := ?diPhoton.leadingPhoton().hasMatchedGenPhoton()?diPhoton.leadingPhoton().matchedGenPhoton().pt():0",
+                                  # "egen1:= ?diPhoton.leadingPhoton().hasMatchedGenPhoton()?diPhoton.leadingPhoton().matchedGenPhoton().energy():0",
+                                  # "genmatch1 := genMatchLead",
+
+                                  "ptgen1    := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().pt():0",
+                                  "egen1     := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().energy():0",
+                                  "genmatch1 := diPhoton.leadingPhoton().hasMatchedGenElectron()",
+
                                   #"testvar2 := diPhoton.leadingPhoton().hasGenMatchType()",
                                   # PHOTON 2
-                                  "genmatch2 := genMatchSubLead",
                                   "et2 := diPhoton.subLeadingPhoton.et",
                                   "pt2 := diPhoton.subLeadingPhoton.pt",
                                   "eta2 := diPhoton.subLeadingPhoton.superCluster.eta",
@@ -210,8 +214,14 @@ cfgTools.addCategories(process.tagCandidateDumper,
                                   "effSigma2 :=  diPhoton.subLeadingPhoton.esEffSigmaRR",
                                   "scraw2 :=  diPhoton.subLeadingPhoton.superCluster.rawEnergy",
                                   "ese2 :=  diPhoton.subLeadingPhoton.superCluster.preshowerEnergy",
-                                  "ptgen2 := ?diPhoton.subLeadingPhoton().hasMatchedGenPhoton()?diPhoton.subLeadingPhoton().matchedGenPhoton().pt():0",
-                                  "egen2 := ?diPhoton.subLeadingPhoton().hasMatchedGenPhoton()?diPhoton.subLeadingPhoton().matchedGenPhoton().energy():0",
+                                  # "ptgen2 := ?diPhoton.subLeadingPhoton().hasMatchedGenPhoton()?diPhoton.subLeadingPhoton().matchedGenPhoton().pt():0",
+                                  # "egen2 := ?diPhoton.subLeadingPhoton().hasMatchedGenPhoton()?diPhoton.subLeadingPhoton().matchedGenPhoton().energy():0",
+                                  # "genmatch2 := genMatchSubLead",
+
+                                  "ptgen2    := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().pt():0",
+                                  "egen2     := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().energy():0",
+                                  "genmatch2 := diPhoton.subLeadingPhoton().hasMatchedGenElectron()",
+
                                   # dijet
                                   "dijet_leadEta",
                                   "dijet_subleadEta",
@@ -315,8 +325,43 @@ process.tagCandidateDumper.nameTemplate ="opttree_$SQRTS_$LABEL_$SUBCAT"
 #                               )
 #process.outpath = cms.EndPath(process.out)
 
+process.load("flashgg.Taggers.flashggDiPhotonsWithGenElectrons_cfi")
+
+# insert our updater right after flashggPreselectedDiPhotons
+pos = process.flashggTagSequence.index(process.flashggPreselectedDiPhotons)
+process.flashggTagSequence.insert(pos+1, process.flashggDiPhotonsWithGenElectrons) 
 
 process.p = cms.Path(process.flashggTagSequence*process.flashggSystTagMerger*process.flashggTagCandidateProducer*process.tagCandidateDumper)
 
 customize(process)
 
+# update input tags (found by hand)
+# flashggPreselectedDiPhotons -> flashggDiPhotonsWithGenElectrons 
+
+
+for mod in [
+
+    process.flashggTagSorter,
+
+    process.flashggDiPhotonMVA,
+
+    process.flashggSigmaMoMpToMTag,
+
+    process.flashggTTHHadronicTag,
+    process.flashggTTHLeptonicTag,
+    process.flashggUntagged,
+    process.flashggVBFDiPhoDiJetMVA,
+    process.flashggVBFMVA,
+    process.flashggVBFTag,
+    process.flashggVHEtTag,
+    process.flashggVHHadronicTag,
+    process.flashggVHLeptonicLooseTag,
+    process.flashggVHLooseTag,
+    process.flashggVHMetTag,
+    process.flashggVHTightTag,
+    process.flashggWHLeptonicTag,
+    process.flashggZHLeptonicTag,
+    process.flashggZPlusJetTag, 
+    ]:
+    
+    mod.DiPhotonTag = cms.InputTag("flashggDiPhotonsWithGenElectrons")

@@ -65,6 +65,9 @@ namespace flashgg {
             // similar to ./MicroAOD/python/flashggGenPhotons_cfi.py
             // if( gen.pt() <= 5 ) { continue; }
 
+
+            if( gen.status() != 1 ) { continue; }
+
             // std::cout << "found electron with status " << gen.status() << std::endl;
 
             float dR = reco::deltaR( photon, gen );

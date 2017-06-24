@@ -6,7 +6,7 @@ process = cms.Process("tnp")
 
 ###################################################################
 myoptions = dict()
-isMC = False
+isMC = True
 
 myoptions['HLTProcessName']        = "HLT"
 
@@ -51,7 +51,9 @@ from flashgg.Validation.treeMakerOptionsPhotons_cfi import *
 if (isMC):
     # myoptions['INPUT_FILE_NAME']       = ("/store/group/phys_higgs/cmshgg/ferriff/flashgg/RunIIFall15DR76-1_3_0-25ns_ext1/1_3_1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIIFall15DR76-1_3_0-25ns_ext1-1_3_1-v0-RunIIFall15MiniAODv2-PU25nsData2015v1_76X_mcRun2_asymptotic_v12-v1/160127_112132/0000/myMicroAODOutputFile_9.root")
 
-    myoptions['INPUT_FILE_NAME']       = ("/store/group/phys_higgs/cmshgg/sethzenz/flashgg/RunIISummer16-2_4_1-25ns_Moriond17/2_4_1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16-2_4_1-25ns_Moriond17-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_HCALDebug_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170114_082421/0000/myMicroAODOutputFile_10.root")
+    # myoptions['INPUT_FILE_NAME']       = ("/store/group/phys_higgs/cmshgg/sethzenz/flashgg/RunIISummer16-2_4_1-25ns_Moriond17/2_4_1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16-2_4_1-25ns_Moriond17-2_4_1-v0-RunIISummer16MiniAODv2-PUMoriond17_HCALDebug_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/170114_082421/0000/myMicroAODOutputFile_10.root") #gkole
+
+    myoptions['INPUT_FILE_NAME']       = ("/store/group/phys_higgs/cmshgg/sethzenz/flashgg/RunIISummer16-2_4_1-25ns_Moriond17/2_4_1/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/RunIISummer16-2_4_1-25ns_Moriond17-2_4_1-v0-RunIISummer16MiniAODv2-BS2016_BSandPUSummer16_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/170212_125957/0000/myMicroAODOutputFile_1.root")
 
     myoptions['OUTPUT_FILE_NAME']      = "TnPTree_mc.root"
     myoptions['TnPPATHS']              = cms.vstring("HLT_Ele27_WPTight_Gsf_v*")
@@ -147,7 +149,7 @@ process.PhotonToRECO = cms.EDAnalyzer("TagProbeFitTreeProducer",
                                       )
 
 if (isMC):
-    #process.PhotonToRECO.probeMatches  = cms.InputTag("McMatchRECO")
+    process.PhotonToRECO.probeMatches  = cms.InputTag("genProbePho") # McMatchRECO") #gkole
     process.PhotonToRECO.eventWeight   = cms.InputTag("generator")
     process.PhotonToRECO.PUWeightSrc   = cms.InputTag("pileupReweightingProducer","pileupWeights")
     
@@ -210,7 +212,7 @@ process.TFileService = cms.Service("TFileService",
 from flashgg.MetaData.JobConfig import JobConfig
 
 customize = JobConfig(crossSections=["$CMSSW_BASE/src/flashgg/MetaData/data/cross_sections.json"])
-customize.setDefault("maxEvents", 1000)
+customize.setDefault("maxEvents", 10)
 customize.setDefault("targetLumi", 1)
 customize(process)
 

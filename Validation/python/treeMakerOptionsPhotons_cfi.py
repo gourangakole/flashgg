@@ -10,7 +10,8 @@ def setModules(process, options):
     process.hltFilter.throw = cms.bool(False)
     process.hltFilter.HLTPaths = options['TnPPATHS']
     
-    from PhysicsTools.TagAndProbe.pileupConfiguration_cfi import pileupProducer
+    # from PhysicsTools.TagAndProbe.pileupConfiguration_cfi import pileupProducer #gkole
+    from EgammaAnalysis.TnPTreeProducer.pileupConfiguration_cfi import pileupProducer
     process.pileupReweightingProducer = pileupProducer.clone()    
 
     ###################################################################
@@ -89,8 +90,10 @@ def setModules(process, options):
                                                  isAND       = cms.bool(True)
                                                  )
     
-    process.goodPhotonProbesL1 = cms.EDProducer("FlashggPhotonL1Stage2CandProducer",
+    process.goodPhotonProbesL1 = cms.EDProducer("FlashggPhotonL1CandProducer",
                                                 inputs = cms.InputTag("goodPhotonProbes"),
+                                                isoObjects = cms.InputTag("l1extraParticles:Isolated"),
+                                                nonIsoObjects = cms.InputTag("l1extraParticles:NonIsolated"),
                                                 objects = cms.InputTag("caloStage2Digis:EGamma"),
                                                 minET = cms.double(40),
                                                 dRmatch = cms.double(0.2),

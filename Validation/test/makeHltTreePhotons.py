@@ -113,7 +113,8 @@ else:
 ###################################################################
 
 setModules(process, options)
-from PhysicsTools.TagAndProbe.treeContentPhotons_cfi import *
+# from PhysicsTools.TagAndProbe.treeContentPhotons_cfi import *
+from EgammaAnalysis.TnPTreeProducer.egmTreesContent_cff.py import *
 
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
@@ -140,7 +141,8 @@ process.maxEvents = cms.untracked.PSet( input = options['MAXEVENTS'])
 ## ID
 ###################################################################
 
-from PhysicsTools.TagAndProbe.photonIDModules_cfi import *
+#from PhysicsTools.TagAndProbe.photonIDModules_cfi import * #gkole
+from EgammaAnalysis.TnPTreeProducer.egmPhotonIDModules_cff.py import *
 setIDs(process, options)
 
 ###################################################################

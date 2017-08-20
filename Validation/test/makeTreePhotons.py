@@ -6,7 +6,7 @@ process = cms.Process("tnp")
 
 ###################################################################
 myoptions = dict()
-isMC = False
+isMC = True
 
 myoptions['HLTProcessName']        = "HLT"
 

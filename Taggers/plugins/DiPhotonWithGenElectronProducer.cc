@@ -66,7 +66,7 @@ namespace flashgg {
             // if( gen.pt() <= 5 ) { continue; }
 
 
-            if( gen.status() != 1 ) { continue; }
+            //if( gen.status() != 1 ) { continue; }
 
             // std::cout << "found electron with status " << gen.status() << std::endl;
 

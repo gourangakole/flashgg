@@ -35,7 +35,7 @@ process.dataRequirements = cms.Sequence()
 process.dataRequirements += process.hltFilter
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 10 )
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 10000 )
 
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")

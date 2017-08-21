@@ -174,6 +174,8 @@ cfgTools.addCategories(process.tagCandidateDumper,
 
                                   "ptgen1    := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().pt():0",
                                   "egen1     := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().energy():0",
+                                  "pxgen1    := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().px():0",
+                                  "pygen1    := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().py():0",
                                   "pzgen1    := ?diPhoton.leadingPhoton().hasMatchedGenElectron()?diPhoton.leadingPhoton().matchedGenElectron().pz():0",
                                   "genmatch1 := diPhoton.leadingPhoton().hasMatchedGenElectron()",
 
@@ -221,6 +223,8 @@ cfgTools.addCategories(process.tagCandidateDumper,
 
                                   "ptgen2    := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().pt():0",
                                   "egen2     := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().energy():0",
+                                  "pxgen2    := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().px():0",
+                                  "pygen2    := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().py():0",
                                   "pzgen2    := ?diPhoton.subLeadingPhoton().hasMatchedGenElectron()?diPhoton.subLeadingPhoton().matchedGenElectron().pz():0",
                                   "genmatch2 := diPhoton.subLeadingPhoton().hasMatchedGenElectron()",
 

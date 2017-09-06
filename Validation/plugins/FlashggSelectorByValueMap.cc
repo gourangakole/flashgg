@@ -1,4 +1,5 @@
-#include "PhysicsTools/TagAndProbe/plugins/SelectorByValueMap.h"
+//#include "PhysicsTools/TagAndProbe/plugins/SelectorByValueMap.h"
+#include "EgammaAnalysis/TnPTreeProducer/plugins/SelectorByValueMap.h"
 #include "flashgg/DataFormats/interface/Photon.h"
 
 typedef SelectorByValueMap<flashgg::Photon, float> FlashggPhotonSelectorByDoubleValueMap;

@@ -3,6 +3,8 @@
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -15,15 +17,16 @@
 #include <TTree.h>
 
 namespace tnp {
-  class FlashggSampleInfoTree : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks, 
+  class FlashggSampleInfoTree : public edm::one::EDProducer<edm::one::WatchLuminosityBlocks,
     edm::EndLuminosityBlockProducer> {
+    //class FlashggSampleInfoTree : public edm::stream::EDProducer<> {
   public:
     explicit FlashggSampleInfoTree(const edm::ParameterSet& config);
     ~FlashggSampleInfoTree() {};
 
     virtual void beginLuminosityBlock(const edm::LuminosityBlock &, const edm::EventSetup&) override;
     virtual void endLuminosityBlock(edm::LuminosityBlock const&, const edm::EventSetup&) override;
-    virtual void endLuminosityBlockProduce(edm::LuminosityBlock &, const edm::EventSetup&) override;
+    virtual void endLuminosityBlockProduce(edm::LuminosityBlock &, const edm::EventSetup&) override; 
     
     virtual void produce(edm::Event &, const edm::EventSetup&) override;
     void endJob();
@@ -42,6 +45,7 @@ namespace tnp {
     double totGenWeight_;
     double totNEvents_; 
   };
+
 }
 
 #endif

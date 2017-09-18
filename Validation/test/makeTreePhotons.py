@@ -149,7 +149,7 @@ process.PhotonToRECO = cms.EDAnalyzer("TagProbeFitTreeProducer",
                                       )
 
 if (isMC):
-    process.PhotonToRECO.probeMatches  = cms.InputTag("genProbePho") # McMatchRECO") #gkole
+    #process.PhotonToRECO.probeMatches  = cms.InputTag("McMatchRECO") #genProbePho") # McMatchRECO") #gkole
     process.PhotonToRECO.eventWeight   = cms.InputTag("generator")
     process.PhotonToRECO.PUWeightSrc   = cms.InputTag("pileupReweightingProducer","pileupWeights")
     
@@ -167,7 +167,6 @@ process.out = cms.OutputModule("PoolOutputModule",
 process.outpath = cms.EndPath(process.out)
 if (not myoptions['DEBUG']):
     process.outpath.remove(process.out)
-
 ##########################################################################################
 ###### MICROAOD STUFF
 ##########################################################################################
@@ -187,7 +186,7 @@ if (isMC):
         process.pho_sequence + 
         process.allTagsAndProbes +
         process.pileupReweightingProducer +
-        process.mc_sequence + 
+        process.mc_sequence +
         process.tree_sequence
         )
 else:

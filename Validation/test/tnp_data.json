@@ -1,10 +1,15 @@
 {
     "processes" : {
         "data" : [
-	"/SingleElectron/ferrif-RunIIFall15DR76-1_3_0-25ns_ext1-1_3_1-v0-Run2015D-16Dec2015-v1-5edb826a5c37da64e53f7a0f39c62a72/USER",
-	"/SingleElectron/sethzenz-RunIIFall15DR76-1_3_0-25ns-1_3_0-v0-Run2015C_25ns-16Dec2015-v1-b7e5c192bb12d549953ce69d2b654ac8/USER"
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016B-18Apr2017_ver2-v1-2930f6461ef517eb5a0d8e440d2d0dc7/USER",
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016C-18Apr2017-v1-2930f6461ef517eb5a0d8e440d2d0dc7/USER", 
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016D-18Apr2017-v1-2930f6461ef517eb5a0d8e440d2d0dc7/USER",
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016E-18Apr2017-v1-2930f6461ef517eb5a0d8e440d2d0dc7/USER",
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016F-18Apr2017-v1-2930f6461ef517eb5a0d8e440d2d0dc7/USER",
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016G-18Apr2017-v1-4e41029f3e47d1b41679c62b086e5e7d/USER", 
+	"/SingleElectron/sethzenz-LegacyReReco-18Apr2017-2_6_0-2_6_0-v0-Run2016H-18Apr2017-v1-4e41029f3e47d1b41679c62b086e5e7d/USER"	
 	]
      },
-     "cmdLine" : "campaign=RunIIFall15DR76 targetLumi=2.6e+3"
+     "cmdLine" : "campaign=LegacyReReco-18Apr2017-2_6_0 targetLumi=35.8e+3 lumiMask=/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/ReReco/Final/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
 }
 

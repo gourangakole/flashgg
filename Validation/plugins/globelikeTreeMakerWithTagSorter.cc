@@ -284,6 +284,7 @@ void FlashggTreeMakerWithTagSorter::endLuminosityBlock(edm::LuminosityBlock cons
     
     edm::Handle<edm::MergeableDouble> totWeight;
     iLumi.getByLabel(edm::InputTag("weightsCount","totalWeight"), totWeight);
+    
     if (totWeight.isValid()) 
         totalGenWeight_ += (double)totWeight->value;
 }

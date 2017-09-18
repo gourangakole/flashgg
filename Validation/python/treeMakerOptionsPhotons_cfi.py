@@ -92,8 +92,13 @@ def setModules(process, options):
     
     process.goodPhotonProbesL1 = cms.EDProducer("FlashggPhotonL1CandProducer",
                                                 inputs = cms.InputTag("goodPhotonProbes"),
-                                                isoObjects = cms.InputTag("l1extraParticles:Isolated"),
-                                                nonIsoObjects = cms.InputTag("l1extraParticles:NonIsolated"),
+                                                #inputs = cms.InputTag("goodPhotonProbesPreselection"),
+                                                #isoObjects = cms.InputTag("goodPhotonProbesPreselection"),
+                                                #nonIsoObjects = cms.InputTag(""),
+                                                #isoObjects = cms.InputTag(""), # 26.07.2017
+                                                #nonIsoObjects = cms.InputTag(""), # 26.07.2017 
+                                                isoObjects = cms.InputTag("l1extraParticles:Isolated"), # 26.07.2017 
+                                                nonIsoObjects = cms.InputTag("l1extraParticles:NonIsolated"), # 26.07.2017 
                                                 objects = cms.InputTag("caloStage2Digis:EGamma"),
                                                 minET = cms.double(40),
                                                 dRmatch = cms.double(0.2),

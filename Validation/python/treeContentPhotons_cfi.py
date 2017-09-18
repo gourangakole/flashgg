@@ -103,7 +103,7 @@ CommonStuffForPhotonProbe = cms.PSet(
 
 mcTruthCommonStuff = cms.PSet(
     isMC        = cms.bool(True),
-    tagMatches  = cms.InputTag("genTagEle"), #McMatchTag"),
+    #tagMatches  = cms.InputTag("McMatchTag"),#  genTagEle"), #McMatchTag"),
     motherPdgId = cms.vint32(), # Z
     #motherPdgId = cms.vint32(22,23), # Z
     #motherPdgId = cms.vint32(443), # JPsi

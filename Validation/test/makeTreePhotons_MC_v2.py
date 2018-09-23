@@ -17,7 +17,7 @@ isMC = True
 
 myoptions['HLTProcessName']        = "HLT"
 #myoptions['DIPHOTON_COLL']         = "flashggUpdatedIdMVADiPhotons"
-myoptions['DIPHOTON_COLL']         = "flashggDiPhotonSystematics" # for the time being
+myoptions['DIPHOTON_COLL']         = "flashggDiPhotonSystematics" # for the systematics application
 
 myoptions['PHOTON_CUTS']           = "(abs(superCluster.eta)<2.5) && !(1.4442<=abs(superCluster.eta)<=1.566) && pt > 22. && pfChgIso03WrtVtx0 < 20.0 && (pfChgIso03WrtVtx0/pt)<=0.3"
 myoptions['LEADING_PHOTON_CUTS']           = "(abs(superCluster.eta)<2.5) && !(1.4442<=abs(superCluster.eta)<=1.566) && pt > 30."

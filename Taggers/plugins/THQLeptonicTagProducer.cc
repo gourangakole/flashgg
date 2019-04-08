@@ -242,23 +242,35 @@ private:
     struct GreaterByBTagging
     {
     public:
-        GreaterByBTagging(std::string urName, std::string urName1):
-            urName( urName )
+      GreaterByBTagging(std::string urName, std::string urName1):
+	
+	urName( urName ) 
+	,urName1(urName1) 
+      {
+      }
+      /*
+      urName1(urName1) 
+      {
+      }
+  
+	urName( urName )
         {
         }
-/*	    urName1(urName1)
+	urName1(urName1)
         {
         }
-*/
-        bool operator()( edm::Ptr<flashgg::Jet> lh, edm::Ptr<flashgg::Jet> rh ) const
-        {
-            return (lh->bDiscriminator(urName.data()) + lh->bDiscriminator(urName1.data())) > (rh->bDiscriminator(urName.data()) + lh->bDiscriminator(urName1.data())) ;
-        };
+      */
+      bool operator()( edm::Ptr<flashgg::Jet> lh, edm::Ptr<flashgg::Jet> rh ) const
+      {
+	
+	return (lh->bDiscriminator(urName.data()) + lh->bDiscriminator(urName1.data())) > (rh->bDiscriminator(urName.data()) + rh->bDiscriminator(urName1.data())) ;
+	
+      };
     private:
-        const std::string urName, urName1;
-//	const std::string urName1;
+      const std::string urName, urName1;
+      //	const std::string urName1;
     };
-
+  
 
     int LeptonType;
     std::vector<edm::Ptr<flashgg::Jet> > SelJetVect;

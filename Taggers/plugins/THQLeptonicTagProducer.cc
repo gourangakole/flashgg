@@ -98,6 +98,8 @@ public:
 private:
     std::string processId_;
     edm::EDGetTokenT< LHEEventProduct > token_lhe;
+//    int  chooseCategory( float, float);
+    int  chooseCategory( float );
     void produce( Event &, const EventSetup & ) override;
     virtual void beginJob() override {
         if(processId_.find("thq") != std::string::npos or processId_.find("thw") != std::string::npos) {
@@ -187,6 +189,7 @@ private:
     FileInPath thqLeptonicMVAweightfile_;
     FileInPath likelihood_input_;
     string  MVAMethod_;
+    vector<double> boundaries;
 
     float thqLeptonicMvaResult_value_, topMass;
 
@@ -242,35 +245,20 @@ private:
     struct GreaterByBTagging
     {
     public:
-      GreaterByBTagging(std::string urName, std::string urName1):
-	
-	urName( urName ) 
-	,urName1(urName1) 
-      {
-      }
-      /*
-      urName1(urName1) 
-      {
-      }
-  
-	urName( urName )
+        GreaterByBTagging(std::string urName, std::string urName1):
+            urName( urName ), urName1(urName1)
         {
         }
-	urName1(urName1)
+
+        bool operator()( edm::Ptr<flashgg::Jet> lh, edm::Ptr<flashgg::Jet> rh ) const
         {
-        }
-      */
-      bool operator()( edm::Ptr<flashgg::Jet> lh, edm::Ptr<flashgg::Jet> rh ) const
-      {
-	
-	return (lh->bDiscriminator(urName.data()) + lh->bDiscriminator(urName1.data())) > (rh->bDiscriminator(urName.data()) + rh->bDiscriminator(urName1.data())) ;
-	
-      };
+            return (lh->bDiscriminator(urName.data()) + lh->bDiscriminator(urName1.data())) > (rh->bDiscriminator(urName.data()) + rh->bDiscriminator(urName1.data())) ;
+        };
     private:
-      const std::string urName, urName1;
-      //	const std::string urName1;
+        const std::string urName, urName1;
+//	const std::string urName1;
     };
-  
+
 
     int LeptonType;
     std::vector<edm::Ptr<flashgg::Jet> > SelJetVect;
@@ -417,6 +405,8 @@ THQLeptonicTagProducer::THQLeptonicTagProducer( const ParameterSet &iConfig ) :
     likelihoodThreshold_thq_ = iConfig.getParameter<double>( "likelihoodThreshold_thq" );
     thqLeptonicMVAweightfile_ = iConfig.getParameter<edm::FileInPath>( "thqleptonicMVAweightfile" );
     likelihood_input_ = iConfig.getParameter<edm::FileInPath>( "likelihood_input" );
+    boundaries = iConfig.getParameter<vector<double > >( "Boundaries" );
+//    assert( is_sorted( boundaries.begin(), boundaries.end() ) ); // 
 
 //    if (MVAMethod_ != ""){
           thqLeptonicMva_.reset( new TMVA::Reader( "!Color:Silent" ) );
@@ -450,6 +440,27 @@ THQLeptonicTagProducer::THQLeptonicTagProducer( const ParameterSet &iConfig ) :
 THQLeptonicTagProducer::~THQLeptonicTagProducer() {
     delete likelihood_tHq;
 }
+
+int THQLeptonicTagProducer::chooseCategory( float mvavalue )
+    {
+      // copied from untagged category
+      // should return 0 if mva above all the numbers, 1 if below the first, ..., boundaries.size()-N if below the Nth, ...
+      int n;
+      for(n = 0 ; n < ( int )boundaries.size() ; n++ ) {
+	if( ( double )mvavalue > boundaries[boundaries.size() - n - 1] ) { return n; }
+      }
+      return -1;
+    }
+  
+/*int THQLeptonicTagProducer::chooseCategory( float mvavalue1, float mvavalue2 )
+    {
+    int n;
+        for( n = 0 ; n < ( int )boundaries.size() ; n++ ) {
+            if( ( double )mvavalue1 > boundaries[boundaries.size() - n - 1] && ( double )mvavalue2 > boundaries[boundaries.size() - n - 1] ) { return n; }
+        }
+        return -1;
+     }
+*/
 
 int n_pass=0;
 int n_total=0;
@@ -517,8 +528,8 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
     assert( diPhotons->size() == mvaResults->size() );
 
     bool photonSelection = false;
-    double idmva1 = 0.;
-    double idmva2 = 0.;
+//    double idmva1 = 0.;
+//    double idmva2 = 0.;
     for( unsigned int diphoIndex = 0; diphoIndex < diPhotons->size(); diphoIndex++ ) {
 
         hasGoodElec = false;
@@ -535,6 +546,15 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
 
         // if(processId_.find("thq") != std::string::npos or processId_.find("thw") != std::string::npos)
         // 	CTCVWeightedVariables["photon1pt"]->Fill( dipho->leadingPhoton()->pt() , CtCvWeights );
+	// gkole
+	//int catnum = chooseCategory( mvares->result );
+	//tag_obj.setCategoryNumber( catnum );	
+	//gkole
+
+	int catnum = chooseCategory( mvares->result );
+	
+	cout << "MVA value   " << mvares->result  << "  and  catnumber" << catnum << endl;
+
         n_pass_before_dipho_cut++;
         if( dipho->leadingPhoton()->pt() < ( dipho->mass() )*leadPhoOverMassThreshold_ ) {
             continue;
@@ -547,12 +567,13 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
         }
         n_pass_after_dipho_cut++;
 
-        idmva1 = dipho->leadingPhoton()->phoIdMvaDWrtVtx( dipho->vtx() );
-        idmva2 = dipho->subLeadingPhoton()->phoIdMvaDWrtVtx( dipho->vtx() );
+//        idmva1 = dipho->leadingPhoton()->phoIdMvaDWrtVtx( dipho->vtx() );
+//        idmva2 = dipho->subLeadingPhoton()->phoIdMvaDWrtVtx( dipho->vtx() );
 
-        if( idmva1 <= PhoMVAThreshold_ || idmva2 <= PhoMVAThreshold_ ) {
+/*        if( idmva1 <= PhoMVAThreshold_ || idmva2 <= PhoMVAThreshold_ ) {
             continue;
         }
+*/
         n_pass_after_diphomva_cut++;
         // if(processId_.find("thq") != std::string::npos or processId_.find("thw") != std::string::npos){
         // 	CTCVWeightedVariables["diPhotonMVA"]->Fill( mvares->result , CtCvWeights );
@@ -561,10 +582,10 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
         // 	CTCVWeightedVariables["diPhotonEta"]->Fill( abs( dipho->eta() ) , CtCvWeights );
         // }
 
-        if( mvares->result < MVAThreshold_ ) {
+/*        if( mvares->result < MVAThreshold_ ) {
             continue;
-        }
-        photonSelection = true;
+        }*/
+      photonSelection = true;
 
 
         G1.SetPtEtaPhiM( diPhotons->ptrAt( diphoIndex )->leadingPhoton()->pt(),
@@ -943,6 +964,10 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
          TightBJetVect.clear(); TightBJetVect_PtSorted.clear();
          centraljet.clear(); forwardjet.clear();
          continue; }	
+
+//cout<<"Btag valueMediumBJetVect[0]           ="<<MediumBJetVect[0]->bDiscriminator("pfDeepCSVJetTags:probb") + MediumBJetVect[0]->bDiscriminator("pfDeepCSVJetTags:probbb")<<endl;
+//cout<<"bTag_value.at(0)"<<bTag_value.at(0)<<endl;
+
 //------------------------------------Likelihood and MVA-----------------------------------------
 //---------------------------------------------------------------------------------------
 //        LikelihoodClass *likelihood_tHq = new LikelihoodClass();
@@ -1035,7 +1060,14 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
          centraljet.clear(); forwardjet.clear();
          continue; }
 */
+//cout<<"boundaries[2]"<<boundaries[2]<<endl;
+//int catnum = -1;
+//cout<<"mvares->result    ="<<mvares->result<<endl;
+//cout<<"idmva1            ="<<idmva1<<endl;
+//cout<<"idmva2            ="<<idmva2<<endl;
 
+//catnum = chooseCategory( mvares->result );
+//catnum = chooseCategory( idmva1, idmva2 );
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------
             thqltags_obj.setHT(ht);
@@ -1096,6 +1128,7 @@ void THQLeptonicTagProducer::produce( Event &evt, const EventSetup & )
 //		thqltags_obj.setthq_mvaresult ( thqLeptonicMvaResult_value_ );
 //        	thqltags_obj.setlikelihood ( lhood_value ) ;
 		thqltags_obj.setbDiscriminatorValue( bTag_value );
+		thqltags_obj.setCategoryNumber(catnum  );
                 thqltags_obj.bTagWeight = 1.0;
                 thqltags_obj.bTagWeightDown = 1.0;
                 thqltags_obj.bTagWeightUp = 1.0;

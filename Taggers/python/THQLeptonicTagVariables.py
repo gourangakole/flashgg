@@ -260,9 +260,9 @@ jet_variables=[
     'bjet1_discr  := ?bJets.size>0? (bJets.at(0).bDiscriminator( "'+ flashggDeepCSVb +'" ) + bJets.at(0).bDiscriminator( "'+ flashggDeepCSVbb +'" )) : -999',
     'bjet2_discr  := ?bJets.size>1? (bJets.at(1).bDiscriminator( "'+ flashggDeepCSVb +'" ) + bJets.at(1).bDiscriminator( "'+ flashggDeepCSVbb +'" )) : -999',
     'bjet3_discr  := ?bJets.size>2? (bJets.at(2).bDiscriminator( "'+ flashggDeepCSVb +'" ) + bJets.at(2).bDiscriminator( "'+ flashggDeepCSVbb +'" )) : -999',
-    'bjet1_discr_1 := ?bJets.size>0? bDiscriminatorValue.at(0) : -999',
-    'bjet2_discr_2 := ?bJets.size>1? bDiscriminatorValue.at(1) : -999',
-    'bjet3_discr_3 := ?bJets.size>2? bDiscriminatorValue.at(2) : -999',
+#    'bjet1_discr_1 := ?bJets.size>0? bDiscriminatorValue.at(0) : -999',
+#    'bjet2_discr_2 := ?bJets.size>1? bDiscriminatorValue.at(1) : -999',
+#    'bjet3_discr_3 := ?bJets.size>2? bDiscriminatorValue.at(2) : -999',
 
 
     # new variables

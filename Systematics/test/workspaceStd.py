@@ -30,7 +30,7 @@ else:
     raise Exception,"Could not find a sensible CMSSW_VERSION for default globaltag"
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 5000 )
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32( 10 )
 
 MUON_ID = "Medium" #["Tight", "Medium" , "Loose", "Soft", "HighPt", "MediumPrompt", "TrkHighPt"]
 MUON_ISO = "LooseRel" #{ LooseID : ["LooseRel"],MediumID:["LooseRel", "TightRel"] , TrkHighPtID:["LooseRelTk", "TightRelTk"], TightIDandIPCut:["LooseRel", "TightRel"], HighPtIDandIPCut:["LooseRelTk", "TightRelTk"] }
@@ -466,7 +466,7 @@ else:
         ["VHHadronicTag",0],
         ["TTHHadronicTag",3],
         ["TTHLeptonicTag",2],
-        ["THQLeptonicTag",0],
+        ["THQLeptonicTag",9],
 #        ["TTHDiLeptonTag",0]
         ]
 
@@ -706,7 +706,7 @@ if customize.verboseSystDump:
 #print >> processDumpFile, process.dumpPython()
 
 # set default options if needed
-customize.setDefault("maxEvents", 5000 )
+customize.setDefault("maxEvents", 1000 )
 customize.setDefault("targetLumi",1.00e+3)
 # call the customization
 customize(process)
